@@ -2,6 +2,8 @@
 
 German wage tax calculation from the official BMF Programmablaufplan.
 
+**[Live Demo](https://canida-software.github.io/lohnsteuer/)**
+
 ## Installation
 
 ```bash
@@ -28,6 +30,36 @@ const result = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1, KVZ: 2.5, PVZ: 1 
 
 console.log(result.LSTLZZ); // 78583 (Cent = 785.83 EUR)
 console.log(result.SOLZLZZ); // 0
+```
+
+## React Headless Component
+
+```tsx
+import { LohnsteuerCalculator } from "lohnsteuerrechner/react";
+
+export function PayrollForm() {
+  return (
+    <LohnsteuerCalculator year={2026} inputs={{ LZZ: 2, RE4: 500000, STKL: 1 }}>
+      {({ getSelectInputProps, getNumberInputProps, getCheckboxInputProps, outputs }) => (
+        <div>
+          <select {...getSelectInputProps("LZZ")}>
+            <option value="1">Year</option>
+            <option value="2">Month</option>
+            <option value="3">Week</option>
+            <option value="4">Day</option>
+          </select>
+
+          <input type="number" {...getNumberInputProps("RE4")} />
+          <select {...getSelectInputProps("STKL")}>...</select>
+          <input type="number" step="0.01" {...getNumberInputProps("KVZ")} />
+          <input type="checkbox" {...getCheckboxInputProps("PVZ")} />
+
+          <output>{outputs?.LSTLZZ ?? 0}</output>
+        </div>
+      )}
+    </LohnsteuerCalculator>
+  );
+}
 ```
 
 ## API Reference

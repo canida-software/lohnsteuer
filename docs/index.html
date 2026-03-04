@@ -234,6 +234,35 @@ console.log(result.LSTLZZ); // 78583</code></pre>
       </section>
 
       <section class="card">
+        <h2 style="margin-top: 0">React Headless Component</h2>
+        <pre><code class="language-tsx">import { LohnsteuerCalculator } from "lohnsteuerrechner/react";
+
+function PayrollForm() {
+  return (
+    &lt;LohnsteuerCalculator year={2026} inputs={{ LZZ: 2, RE4: 500000, STKL: 1 }}&gt;
+      {({ getSelectInputProps, getNumberInputProps, getCheckboxInputProps, outputs }) =&gt; (
+        &lt;div&gt;
+          &lt;select {...getSelectInputProps("LZZ")}&gt;
+            &lt;option value="1"&gt;Year&lt;/option&gt;
+            &lt;option value="2"&gt;Month&lt;/option&gt;
+            &lt;option value="3"&gt;Week&lt;/option&gt;
+            &lt;option value="4"&gt;Day&lt;/option&gt;
+          &lt;/select&gt;
+
+          &lt;input type="number" {...getNumberInputProps("RE4")} /&gt;
+          &lt;select {...getSelectInputProps("STKL")}&gt;...&lt;/select&gt;
+          &lt;input type="number" step="0.01" {...getNumberInputProps("KVZ")} /&gt;
+          &lt;input type="checkbox" {...getCheckboxInputProps("PVZ")} /&gt;
+
+          &lt;output&gt;{outputs?.LSTLZZ ?? 0}&lt;/output&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/LohnsteuerCalculator&gt;
+  );
+}</code></pre>
+      </section>
+
+      <section class="card">
         <h2 style="margin-top: 0">Browser CDN Example</h2>
         <pre><code class="language-html">&lt;script type="module"&gt;
   import { calculate } from "https://cdn.jsdelivr.net/npm/lohnsteuerrechner/+esm";

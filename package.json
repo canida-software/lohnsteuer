@@ -31,6 +31,10 @@
     "./core": {
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js"
     }
   },
   "files": [
@@ -50,9 +54,19 @@
   "dependencies": {
     "decimal.js": "^10.5.0"
   },
+  "peerDependencies": {
+    "react": ">=17.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@types/react": "^19.2.9",
     "opencode-ai": "latest",
     "oxlint": "^1.41.0",
+    "react": "^19.2.3",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
