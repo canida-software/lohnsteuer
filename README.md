@@ -5,7 +5,7 @@ German wage tax calculation from the official BMF Programmablaufplan.
 ## Installation
 
 ```bash
-npm install lohnsteuer
+npm install lohnsteuerrechner
 ```
 
 ## Features
@@ -22,7 +22,7 @@ npm install lohnsteuer
 ## Quick Start
 
 ```typescript
-import { calculate } from "lohnsteuer";
+import { calculate } from "lohnsteuerrechner";
 
 const result = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1, KVZ: 2.5, PVZ: 1 });
 
@@ -153,7 +153,7 @@ Use directly in the browser with jsDelivr:
 
 ```html
 <script type="module">
-  import { calculate } from "https://cdn.jsdelivr.net/npm/lohnsteuer/+esm";
+  import { calculate } from "https://cdn.jsdelivr.net/npm/lohnsteuerrechner/+esm";
 
   const result = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1, KVZ: 2.5, PVZ: 1 });
   console.log(result.LSTLZZ);

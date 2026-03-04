@@ -1,6 +1,6 @@
 {
-  "name": "lohnsteuer",
-  "version": "1.0.1",
+  "name": "lohnsteuerrechner",
+  "version": "1.0.2",
   "description": "German wage tax (Lohnsteuer) calculation from the official BMF Programmablaufplan",
   "keywords": [
     "lohnsteuer",
@@ -36,6 +36,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
     "lint": "oxlint -D recommended --ignore-pattern node_modules",

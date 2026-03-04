@@ -220,7 +220,7 @@
 
       <section class="card">
         <h2 style="margin-top: 0">Node.js Example</h2>
-        <pre><code class="language-typescript">import { calculate } from "lohnsteuer";
+        <pre><code class="language-typescript">import { calculate } from "lohnsteuerrechner";
 
 const result = calculate(2026, {
   LZZ: 2,
@@ -236,7 +236,7 @@ console.log(result.LSTLZZ); // 78583</code></pre>
       <section class="card">
         <h2 style="margin-top: 0">Browser CDN Example</h2>
         <pre><code class="language-html">&lt;script type="module"&gt;
-  import { calculate } from "https://cdn.jsdelivr.net/npm/lohnsteuer/+esm";
+  import { calculate } from "https://cdn.jsdelivr.net/npm/lohnsteuerrechner/+esm";
 
   const result = calculate(2026, {
     LZZ: 2,
@@ -291,10 +291,10 @@ console.log(result.LSTLZZ); // 78583</code></pre>
 
       let calculate;
       try {
-        ({ calculate } = await import("https://cdn.jsdelivr.net/npm/lohnsteuer/+esm"));
+        ({ calculate } = await import("https://cdn.jsdelivr.net/npm/lohnsteuerrechner/+esm"));
       } catch (error) {
         statusEl.classList.add("error");
-        statusEl.textContent = "Failed to load lohnsteuer from jsDelivr.";
+        statusEl.textContent = "Failed to load lohnsteuerrechner from jsDelivr.";
       }
 
       function runCalculation() {
