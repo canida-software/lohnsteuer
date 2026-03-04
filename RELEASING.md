@@ -1,6 +1,8 @@
 # Releasing
 
-This package uses automated publishing via GitHub Actions with npm OIDC trusted publishing.
+This package uses GitHub Actions with npm OIDC trusted publishing.
+
+Current repository state: the publish workflow is manual-only (`workflow_dispatch`).
 
 ## Release Process
 
@@ -9,12 +11,22 @@ This package uses automated publishing via GitHub Actions with npm OIDC trusted 
    npm version patch  # or minor, major
    ```
 
-2. **Push with tags**
+2. **Push changes**
    ```bash
-   git push && git push --tags
+   git push
    ```
 
-3. **Done** - GitHub Actions automatically publishes to npm when a `v*` tag is pushed.
+3. **Run Publish workflow manually**
+   - GitHub -> Actions -> `Publish` -> `Run workflow`
+
+If you want tag-based auto publish again, restore the trigger in `.github/workflows/publish.yml`:
+
+```yaml
+on:
+  push:
+    tags:
+      - "v*"
+```
 
 ## Version Guidelines
 

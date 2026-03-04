@@ -1,10 +1,16 @@
-# Master Prompt: Build the `lohnsteuer` npm Package (End-to-End)
+# Master Prompt: Build the `lohnsteuerrechner` npm Package (End-to-End)
 
 ## Objective
 
-Build and publish an npm package called `lohnsteuer` that implements the official
+Build and publish an npm package called `lohnsteuerrechner` that implements the official
 German wage tax (Lohnsteuer) calculation from the BMF Programmablaufplan (PAP).
 The implementation must be cent-exact against the BMF's external API.
+
+> Note: This document is the original planning prompt. The implemented codebase diverges in a few places:
+> - package name is `lohnsteuerrechner`
+> - runtime math library is `decimal.js` (not `decimal.js-light`)
+> - no separate BigDecimal wrapper module; PAP modules use `Decimal` directly
+> - package exports include `./react` (headless React integration)
 
 **Read `AGENTS.md` first** -- it defines the project rules, tech stack, and constraints.
 **Read `.context/docs/domain.md` second** -- it is the complete domain reference.
@@ -59,7 +65,7 @@ dist/
 
 ```json
 {
-  "name": "lohnsteuer",
+  "name": "lohnsteuerrechner",
   "version": "0.1.0",
   "description": "German wage tax (Lohnsteuer) calculation from the official BMF Programmablaufplan",
   "keywords": ["lohnsteuer", "german", "tax", "wage-tax", "payroll", "steuer", "bmf"],
@@ -78,6 +84,10 @@ dist/
     "./core": {
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js"
     }
   },
   "files": ["dist"],
@@ -90,7 +100,7 @@ dist/
     "update-pap": "opencode run --command project:update-pap"
   },
   "dependencies": {
-    "decimal.js-light": "^2.5.1"
+    "decimal.js": "^10.5.0"
   },
   "devDependencies": {
     "opencode-ai": "latest",
@@ -102,7 +112,7 @@ dist/
 }
 ```
 
-Note: `decimal.js-light` is a runtime dependency (not dev), because consumers need it.
+Note: `decimal.js` is a runtime dependency (not dev), because consumers need it.
 
 ### 1.5 Create `tsconfig.json`
 
@@ -132,10 +142,12 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   entry: {
     "core/index": "src/core/index.ts",
+    "react/index": "src/react/index.ts",
   },
   format: ["esm"],
   dts: true,
   clean: true,
+  external: ["react"],
 });
 ```
 
@@ -170,15 +182,15 @@ npm run build       # must produce dist/
 
 ---
 
-## Phase 2: BigDecimal Wrapper + Types [SUBAGENT-ELIGIBLE: two parallel tasks]
+## Phase 2: Decimal Conventions + Types [SUBAGENT-ELIGIBLE: two parallel tasks]
 
-### Subagent A: BigDecimal Wrapper (`src/core/bigdecimal.ts`)
+### Subagent A: Decimal Conventions (`src/core/`)
 
-Create a thin wrapper that aligns `decimal.js-light` with the PAP's Java BigDecimal
-operations. The wrapper must make PAP translation mechanical.
+Use `decimal.js` directly in PAP modules and keep translation from Java BigDecimal
+mechanical and explicit.
 
 Study `.context/taxjs/build/transform.xsl` (line 198) for the Java-to-JS mapping,
-but map to decimal.js-light instead of big.js.
+but map to decimal.js instead of big.js.
 
 Required operations:
 - `BigDecimal.valueOf(n)` -> constructor
@@ -190,17 +202,12 @@ Required operations:
 - `BigDecimal.ZERO`, `BigDecimal.ONE`
 - `ROUND_DOWN` (toward zero), `ROUND_UP` (away from zero)
 
-The wrapper can either:
-(a) Export helper functions that operate on `Decimal` values directly, or
-(b) Create a `BigDecimal` class wrapping `Decimal`
-
-Choose whichever makes the PAP translation code most readable. The PAP code is
-full of chained expressions like:
+The PAP code is full of chained expressions like:
 ```
 ZRE4J = (RE4.multiply(ZAHL12)).divide(ZAHL100, 2, BigDecimal.ROUND_DOWN)
 ```
 
-This must translate cleanly.
+This must translate cleanly. In the implemented codebase, there is no separate wrapper module.
 
 ### Subagent B: Type Definitions (`src/core/types.ts`)
 
@@ -252,7 +259,7 @@ export interface LohnsteuerInternals {
 }
 ```
 
-Note: Internals use `Decimal` type (the BigDecimal wrapper), not `number`.
+Note: Internals use `Decimal` type, not `number`.
 
 Also extract the CONSTANTS (TAB1-TAB5, ZAHL constants) into a type or as part of
 the PAP class.
@@ -559,7 +566,7 @@ export * from "./core";
 ### 7.4 Final API verification
 
 ```typescript
-import { calculate } from "lohnsteuer";
+import { calculate } from "lohnsteuerrechner";
 
 // Simple monthly calculation
 const result = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1 });
@@ -703,9 +710,9 @@ This package uses automated publishing via GitHub Actions with npm OIDC trusted 
 
 Structure (model after `.context/kennzeichen/README.md`):
 
-1. **Title**: `lohnsteuer`
+1. **Title**: `lohnsteuerrechner`
 2. **Subtitle**: German wage tax calculation from the official BMF Programmablaufplan
-3. **Installation**: `npm install lohnsteuer`
+3. **Installation**: `npm install lohnsteuerrechner`
 4. **Features** bullet list:
    - Official BMF PAP 2025 + 2026 implementation
    - Cent-exact results matching the BMF Steuerrechner
@@ -714,11 +721,11 @@ Structure (model after `.context/kennzeichen/README.md`):
    - Supplementary payments (sonstige Bezuege)
    - Pension/retirement allowances
    - BigDecimal precision (no floating-point errors)
-   - Zero dependencies at runtime (except decimal.js-light)
+   - Zero dependencies at runtime (except decimal.js)
    - Works in Node.js and browsers
 5. **Quick Start**:
    ```typescript
-   import { calculate } from "lohnsteuer"
+   import { calculate } from "lohnsteuerrechner"
    const result = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1 })
    console.log(result.LSTLZZ) // 78583 (Cent = 785.83 EUR)
    ```
@@ -778,7 +785,7 @@ Should show only `dist/` files and `package.json`, `README.md`, `LICENSE`.
 
 Create a temporary test:
 ```typescript
-// Simulate: npm install lohnsteuer && node -e "..."
+// Simulate: npm install lohnsteuerrechner && node -e "..."
 import { calculate } from "./dist/core/index.js";
 const r = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1 });
 console.assert(r.LSTLZZ > 0, "Should produce non-zero tax");
@@ -808,7 +815,7 @@ git push && git push --tags
 
 | Parallel Group | Tasks | Rationale |
 |---------------|-------|-----------|
-| Phase 2 | BigDecimal wrapper + Types | No interdependency |
+| Phase 2 | Decimal conventions + Types | No interdependency |
 | Phase 3 + 5 | PAP 2026 + PAP 2025 | Independent year implementations (but 2025 benefits from doing 2026 first as a template) |
 | Phase 4 + 6 | Tests 2026 + Tests 2025 | Independent (after respective impl) |
 | Phase 8 + 9 | CI/CD + README/demo | Independent of each other |
@@ -856,7 +863,7 @@ The project is DONE when:
 
 1. `npm run lint && npm run typecheck && npm test && npm run build` -- all pass
 2. `npm run test:api` -- 100% match against BMF external API
-3. Package exports work: `import { calculate } from "lohnsteuer"`
+3. Package exports work: `import { calculate } from "lohnsteuerrechner"`
 4. PAP 2025 and 2026 both implemented and validated
 5. CI/CD pipelines created and correct
 6. README with API docs, demo page deployed

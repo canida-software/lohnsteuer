@@ -59,7 +59,7 @@ Follow `PROMPT.md` phase by phase. There are 11 phases:
 ```
 Phase 0:  Clone reference repos (above -- do this first)
 Phase 1:  Project scaffold (package.json, tsconfig, tsup, vitest, .nvmrc)
-Phase 2:  BigDecimal wrapper + types from PAP XML [PARALLEL: 2 subagents]
+Phase 2:  Decimal conventions + types from PAP XML [PARALLEL: 2 subagents]
 Phase 3:  PAP 2026 implementation (translate XML -> TypeScript)
 Phase 4:  Tests + BMF API validation for 2026
 Phase 5:  PAP 2025 implementation [CAN PARALLEL with 3]
@@ -76,13 +76,13 @@ Phase 11: Verify yearly update framework (opencode, commands, fixtures)
 2. Update `.context/PROGRESS.md`: change `- [ ]` to `- [x]` for the completed phase
 
 **Use subagents** where marked in PROMPT.md. The key parallelization opportunities:
-- Phase 2: BigDecimal wrapper and types are independent
+- Phase 2: Decimal conventions and types are independent
 - Phase 3 + 5: PAP 2026 and 2025 are independent (but 2026 first is recommended as template)
 - Phase 8 + 9: CI/CD and README are independent
 
 ## Critical rules (from AGENTS.md)
 
-1. **ALL arithmetic uses decimal.js-light**, never native Number for monetary values
+1. **ALL arithmetic uses decimal.js**, never native Number for monetary values
 2. **Method names match the PAP exactly**: MPARA, MRE4JL, MRE4, MBERECH, MZTABFB, MLSTJAHR, UPTAB26, etc.
 3. **Variable names match the PAP exactly**: RE4, LSTLZZ, ZRE4J, ZVE, etc.
 4. **All monetary values are in Cent** at the public API boundary

@@ -39,8 +39,7 @@ Java-flavored pseudocode -- translate it to TypeScript, do not copy Java idioms.
 ## Tech Stack (mandatory)
 
 - **TypeScript 5.x**, strict mode, ESM (`"type": "module"`)
-- **decimal.js-light** for BigDecimal arithmetic (preferred over big.js for better
-  rounding mode control matching Java's BigDecimal)
+- **decimal.js** for BigDecimal arithmetic (matching Java BigDecimal rounding semantics)
 - **tsup** for bundling (ESM output, .d.ts generation)
 - **vitest** for testing
 - **oxlint** for linting
@@ -48,34 +47,39 @@ Java-flavored pseudocode -- translate it to TypeScript, do not copy Java idioms.
 
 ## Architecture Rules
 
-1. **`src/core/`** -- Framework-agnostic. Zero runtime dependencies except decimal.js-light.
+1. **`src/core/`** -- Framework-agnostic. Zero runtime dependencies except decimal.js.
    - `types.ts` -- Input/output/internal type definitions derived from PAP XML
-   - `bigdecimal.ts` -- Thin wrapper aligning decimal.js-light API with PAP operations
    - `pap2026.ts` -- PAP 2026 implementation (one file per year)
    - `pap2025.ts` -- PAP 2025 implementation
-   - `index.ts` -- Public API: `calculate(year, inputs) => outputs`
+   - `calculate.ts` -- Public API implementation: `calculate(year, inputs) => outputs`
+   - `index.ts` -- Core barrel export
 
-2. **Each PAP year is a self-contained module.** Method names MUST match the PAP exactly
+2. **`src/react/`** -- Optional headless React integration.
+   - `useLohnsteuer.ts` -- Hook wrapper over core `calculate`
+   - `LohnsteuerCalculator.tsx` -- Render-props headless component
+   - `index.ts` -- React subpath barrel export
+
+3. **Each PAP year is a self-contained module.** Method names MUST match the PAP exactly
    (MPARA, MRE4JL, MRE4, MRE4ABZ, MBERECH, MZTABFB, MLSTJAHR, etc.). Variable names
    MUST match the PAP exactly (RE4, LSTLZZ, ZRE4J, etc.).
 
-3. **The public API should be simple:**
+4. **The public API should be simple:**
    ```typescript
    import { calculate } from "lohnsteuerrechner"
    const result = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1 })
    // result.LSTLZZ -> 78583 (Cent)
    ```
 
-4. **Inputs/outputs use plain numbers** at the public API boundary (Cent as integers).
+5. **Inputs/outputs use plain numbers** at the public API boundary (Cent as integers).
    BigDecimal is internal only. The library handles all conversions.
 
-5. **Package uses Node.js subpath exports:** `.` (core), `./core`
+6. **Package uses Node.js subpath exports:** `.` (core), `./core`, `./react`
 
 ## Critical Implementation Rules
 
 ### BigDecimal Precision
 
-- ALL internal arithmetic MUST use decimal.js-light (or equivalent), NEVER native Number
+- ALL internal arithmetic MUST use decimal.js (or equivalent), NEVER native Number
   for monetary calculations
 - Rounding modes from the PAP must be exact:
   - `BigDecimal.ROUND_DOWN` = truncate toward zero (decimal.js `ROUND_DOWN`)
