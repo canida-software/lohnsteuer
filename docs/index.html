@@ -199,6 +199,18 @@
         margin-bottom: 10px;
       }
 
+      .result-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .result-head h2 {
+        margin: 0;
+      }
+
       button {
         border: 0;
         border-radius: 8px;
@@ -231,6 +243,19 @@
       button.big {
         font-size: 15px;
         padding: 12px 16px;
+        border-radius: 10px;
+      }
+
+      button.icon-btn {
+        width: 42px;
+        min-width: 42px;
+        height: 42px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        line-height: 1;
         border-radius: 10px;
       }
 
@@ -303,6 +328,44 @@
         border-top: 1px solid #e2e8f0;
         color: var(--muted);
         font-size: 13px;
+      }
+
+      .example-row {
+        margin-top: 14px;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.56);
+        backdrop-filter: blur(2px);
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        z-index: 100;
+      }
+
+      .modal-panel {
+        width: min(900px, 100%);
+        max-height: min(82vh, 920px);
+        overflow: auto;
+        background: #fff;
+        border: 1px solid #cbd5e1;
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: 0 22px 64px rgba(15, 23, 42, 0.3);
+      }
+
+      .modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+
+      .modal-head h2 {
+        margin: 0;
       }
 
       @media (max-width: 1020px) {
@@ -531,11 +594,14 @@
 
         <aside style="display: grid; gap: 12px; align-content: start">
           <section class="card">
+            <div class="result-head">
+              <h2>Ergebnisse</h2>
+              <button id="payload-open" class="secondary icon-btn" type="button" title="Payload anzeigen" aria-label="Payload anzeigen">{}</button>
+            </div>
             <div class="result-actions">
               <button id="calculate-btn" class="big" type="button">Berechnen</button>
-              <button id="reset-btn" class="secondary big" type="button">Zurücksetzen</button>
+              <button id="reset-btn" class="secondary icon-btn" type="button" title="Zurücksetzen" aria-label="Zurücksetzen">↺</button>
             </div>
-            <h2>Ergebnisse</h2>
             <div class="stats">
               <div class="stat">
                 <div class="k">LSTLZZ</div>
@@ -559,16 +625,12 @@
               <tbody id="results-body"></tbody>
             </table>
           </section>
+        </aside>
+      </section>
 
-          <section class="card">
-            <h2>Generierter API-Payload</h2>
-            <p class="tiny">Genau dieses Objekt wird an <span class="mono">calculate(year, inputs)</span> übergeben.</p>
-            <pre><code class="language-json" id="payload-json">{}</code></pre>
-          </section>
-
-          <section class="card">
-            <h2>Anwendungsbeispiel</h2>
-            <pre><code class="language-typescript">import { calculate } from "lohnsteuerrechner";
+      <section class="card example-row">
+        <h2>Anwendungsbeispiel</h2>
+        <pre><code class="language-typescript">import { calculate } from "lohnsteuerrechner";
 
 const result = calculate(2026, {
   LZZ: 2,
@@ -579,20 +641,32 @@ const result = calculate(2026, {
 });
 
 console.log(result.LSTLZZ);</code></pre>
-          </section>
-        </aside>
       </section>
 
       <p class="footer">
         Angelehnt an das offizielle BMF-Eingabeformular:
         <a href="https://www.bmf-steuerrechner.de/bl/bl2026/eingabeformbl2026.xhtml">bmf-steuerrechner.de</a>.
       </p>
+
+      <div id="payload-modal" class="modal-backdrop" hidden>
+        <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="payload-title">
+          <div class="modal-head">
+            <h2 id="payload-title">Generierter API-Payload</h2>
+            <button id="payload-close" class="secondary" type="button">Schließen</button>
+          </div>
+          <p class="tiny">Genau dieses Objekt wird an <span class="mono">calculate(year, inputs)</span> übergeben.</p>
+          <pre><code class="language-json" id="payload-json">{}</code></pre>
+        </section>
+      </div>
     </main>
 
     <script type="module">
       const statusEl = document.getElementById("status");
       const resultsBodyEl = document.getElementById("results-body");
       const payloadEl = document.getElementById("payload-json");
+      const payloadModalEl = document.getElementById("payload-modal");
+      const payloadOpenEl = document.getElementById("payload-open");
+      const payloadCloseEl = document.getElementById("payload-close");
       const taxClassModeEl = document.getElementById("tax-class-mode");
       const factorWrapEl = document.getElementById("factor-wrap");
 
@@ -841,6 +915,16 @@ console.log(result.LSTLZZ);</code></pre>
         }
       }
 
+      function openPayloadModal() {
+        payloadModalEl.hidden = false;
+        document.body.style.overflow = "hidden";
+      }
+
+      function closePayloadModal() {
+        payloadModalEl.hidden = true;
+        document.body.style.overflow = "";
+      }
+
       const importKandidaten = ["./dist/core/index.js", "../dist/core/index.js", "/dist/core/index.js"];
       let letzterImportFehler = "";
       for (const kandidat of importKandidaten) {
@@ -868,6 +952,18 @@ console.log(result.LSTLZZ);</code></pre>
       q("reset-btn").addEventListener("click", () => {
         resetToDefaults();
         runCalculation();
+      });
+      payloadOpenEl.addEventListener("click", openPayloadModal);
+      payloadCloseEl.addEventListener("click", closePayloadModal);
+      payloadModalEl.addEventListener("click", (event) => {
+        if (event.target === payloadModalEl) {
+          closePayloadModal();
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !payloadModalEl.hidden) {
+          closePayloadModal();
+        }
       });
       q("preset-monthly").addEventListener("click", () => applyPreset("monthly"));
       q("preset-yearly").addEventListener("click", () => applyPreset("yearly"));
