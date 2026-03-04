@@ -1,528 +1,113 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lohnsteuer demo</title>
+    <title>Lohnsteuerrechner Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css"
     />
+    <script>
+      tailwind = {
+        config: {
+          theme: {
+            extend: {
+              colors: {
+                fiscal: {
+                  50: "#f4f8f8",
+                  100: "#e5eeef",
+                  200: "#c7dde0",
+                  300: "#9fbdc3",
+                  400: "#5f8f99",
+                  500: "#3c6f7a",
+                  600: "#325d67",
+                  700: "#2d4e56",
+                  800: "#1e343a",
+                  900: "#132428",
+                },
+                copper: {
+                  300: "#f4bb7e",
+                  400: "#ea9f50",
+                  500: "#d9832d",
+                },
+              },
+              fontFamily: {
+                display: ["Syne", "sans-serif"],
+                body: ["IBM Plex Sans", "sans-serif"],
+              },
+              boxShadow: {
+                aura: "0 24px 80px rgba(19,36,40,0.22)",
+                plate: "0 8px 28px rgba(18,36,39,0.12)",
+              },
+              keyframes: {
+                reveal: {
+                  "0%": { opacity: "0", transform: "translateY(12px)" },
+                  "100%": { opacity: "1", transform: "translateY(0)" },
+                },
+                pulsebar: {
+                  "0%, 100%": { opacity: "0.7" },
+                  "50%": { opacity: "1" },
+                },
+              },
+              animation: {
+                reveal: "reveal 600ms ease both",
+                pulsebar: "pulsebar 2200ms ease-in-out infinite",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
       :root {
-        --bg: #f5f7fb;
-        --panel: #ffffff;
-        --ink: #0f172a;
-        --muted: #475569;
-        --line: #dbe4f0;
-        --accent: #f59e0b;
-        --accent-dark: #b45309;
+        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='%23000000' fill-opacity='0.045'%3E%3Ccircle cx='8' cy='8' r='1'/%3E%3Ccircle cx='60' cy='38' r='1'/%3E%3Ccircle cx='132' cy='14' r='1'/%3E%3Ccircle cx='22' cy='116' r='1'/%3E%3Ccircle cx='104' cy='74' r='1'/%3E%3Ccircle cx='166' cy='126' r='1'/%3E%3Ccircle cx='78' cy='160' r='1'/%3E%3C/g%3E%3C/svg%3E");
       }
 
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        padding: 24px;
-        color: var(--ink);
-        background:
-          radial-gradient(circle at 12% 2%, #fff4db 0, #fff4db 10%, transparent 36%),
-          radial-gradient(circle at 92% 18%, #e8f0ff 0, #e8f0ff 12%, transparent 38%),
-          var(--bg);
-        font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
-      }
-
-      .container {
-        max-width: 1320px;
-        margin: 0 auto;
-      }
-
-      .hero {
-        display: flex;
-        gap: 18px;
-        align-items: flex-start;
-        justify-content: space-between;
-        margin-bottom: 18px;
-      }
-
-      h1 {
-        margin: 0;
-        font-size: 30px;
-      }
-
-      .subtitle {
-        margin: 8px 0 0;
-        color: var(--muted);
-        max-width: 860px;
-      }
-
-      .pill {
-        border: 1px solid #fed7aa;
-        background: #fff7ed;
-        color: #9a3412;
-        border-radius: 999px;
-        padding: 6px 12px;
-        font-size: 13px;
-        white-space: nowrap;
-      }
-
-      .layout {
-        display: grid;
-        grid-template-columns: minmax(380px, 1.15fr) minmax(320px, 0.85fr);
-        gap: 16px;
-      }
-
-      .card {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 14px;
-      }
-
-      .card h2 {
-        margin: 0 0 8px;
-        font-size: 18px;
-      }
-
-      .tiny {
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-        gap: 10px 12px;
-      }
-
-      .row-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-
-      fieldset {
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 12px;
-        margin: 0 0 12px;
-      }
-
-      legend {
-        padding: 0 6px;
-        color: #1e3a8a;
-        font-weight: 700;
-      }
-
-      label {
-        display: block;
-        font-size: 13px;
-        margin-bottom: 4px;
-        color: #334155;
-      }
-
-      input,
-      select {
-        width: 100%;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        background: #fff;
-        padding: 8px 10px;
-        font-size: 14px;
-      }
-
-      details {
-        border: 1px dashed #cbd5e1;
-        border-radius: 10px;
-        padding: 10px;
-      }
-
-      summary {
-        cursor: pointer;
-        font-weight: 700;
-        color: #334155;
-      }
-
-      .actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 10px;
-      }
-
-      button {
-        border: 0;
-        border-radius: 8px;
-        padding: 9px 12px;
-        font-size: 14px;
-        cursor: pointer;
-        background: #0f172a;
-        color: #fff;
-      }
-
-      button.secondary {
-        background: #e2e8f0;
-        color: #0f172a;
-      }
-
-      button.preset {
-        background: #ffedd5;
-        color: var(--accent-dark);
-        border: 1px solid #fed7aa;
-      }
-
-      .status {
-        margin-top: 10px;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      .status.error {
-        color: #b91c1c;
-      }
-
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-        margin-bottom: 10px;
-      }
-
-      .stat {
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 10px;
-      }
-
-      .stat .k {
-        color: var(--muted);
-        font-size: 12px;
-      }
-
-      .stat .v {
-        font-size: 20px;
-        font-weight: 700;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 8px;
-      }
-
-      th,
-      td {
-        text-align: left;
-        padding: 8px 6px;
-        border-bottom: 1px solid #e2e8f0;
-        font-size: 13px;
-      }
-
-      th {
-        color: #334155;
-      }
-
-      pre {
-        margin: 0;
-        border-radius: 8px;
-      }
-
-      .mono {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      }
-
-      .footer {
-        margin-top: 18px;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      @media (max-width: 1020px) {
-        .layout {
-          grid-template-columns: 1fr;
-        }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image: var(--grain);
+        opacity: 0.55;
+        z-index: 0;
       }
     </style>
   </head>
-  <body>
-    <main class="container">
-      <header class="hero">
-        <div>
-          <h1>Lohnsteuer Demo (BMF-style)</h1>
-          <p class="subtitle">
-            Comprehensive input form inspired by the BMF 2026 calculator. Inputs are entered mostly in EUR,
-            converted to Cent for the API call, and calculated locally using <span class="mono">./dist/core/index.js</span>.
-          </p>
-        </div>
-        <div class="pill">No npm CDN dependency</div>
-      </header>
+  <body class="min-h-screen bg-slate-100 text-slate-900 font-body">
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+      <div class="absolute -top-40 -left-32 h-[380px] w-[380px] rounded-full bg-copper-300/30 blur-3xl"></div>
+      <div class="absolute top-0 right-0 h-[320px] w-[320px] rounded-full bg-fiscal-300/30 blur-3xl"></div>
+      <div class="absolute bottom-0 left-1/3 h-[280px] w-[280px] rounded-full bg-copper-400/20 blur-3xl"></div>
+    </div>
 
-      <section class="layout">
-        <article class="card">
-          <h2>Calculation Inputs</h2>
-          <p class="tiny">Fields match PAP input names where possible.</p>
-
-          <form id="tax-form" onsubmit="return false;">
-            <fieldset>
-              <legend>General Tax Attributes</legend>
-              <div class="form-grid">
-                <div>
-                  <label for="year">Year</label>
-                  <select id="year">
-                    <option value="2026" selected>2026</option>
-                    <option value="2025">2025</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="birth-year">Birth year (optional)</label>
-                  <input id="birth-year" type="number" min="1900" max="2100" placeholder="e.g. 1960" />
-                </div>
-                <div>
-                  <label for="tax-class-mode">Tax class</label>
-                  <select id="tax-class-mode">
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="4f">4 with factor</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                  </select>
-                </div>
-                <div id="factor-wrap" style="display: none">
-                  <label for="factor">Factor f (3 decimals)</label>
-                  <input id="factor" type="number" step="0.001" min="0" value="1.000" />
-                </div>
-                <div>
-                  <label for="zkf">Child allowance ZKF</label>
-                  <select id="zkf">
-                    <option value="0" selected>0</option>
-                    <option value="0.5">0.5</option>
-                    <option value="1">1</option>
-                    <option value="1.5">1.5</option>
-                    <option value="2">2</option>
-                    <option value="2.5">2.5</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="church-state">Church tax state</label>
-                  <select id="church-state">
-                    <option value="none" selected>none</option>
-                    <option value="bw">Baden-Wuerttemberg</option>
-                    <option value="by">Bayern</option>
-                    <option value="be">Berlin</option>
-                    <option value="bb">Brandenburg</option>
-                    <option value="hb">Bremen</option>
-                    <option value="hh">Hamburg</option>
-                    <option value="he">Hessen</option>
-                    <option value="mv">Mecklenburg-Vorpommern</option>
-                    <option value="ni">Niedersachsen</option>
-                    <option value="nw">Nordrhein-Westfalen</option>
-                    <option value="rp">Rheinland-Pfalz</option>
-                    <option value="sl">Saarland</option>
-                    <option value="sn">Sachsen</option>
-                    <option value="st">Sachsen-Anhalt</option>
-                    <option value="sh">Schleswig-Holstein</option>
-                    <option value="th">Thueringen</option>
-                  </select>
-                </div>
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend>Gross Wage</legend>
-              <div class="form-grid">
-                <div>
-                  <label for="lzz">Pay period LZZ</label>
-                  <select id="lzz">
-                    <option value="1">Year</option>
-                    <option value="2" selected>Month</option>
-                    <option value="3">Week</option>
-                    <option value="4">Day</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="re4">Gross wage RE4 (EUR)</label>
-                  <input id="re4" type="number" step="0.01" min="0" value="5000.00" />
-                </div>
-                <div>
-                  <label for="vbez">Pension benefits VBEZ (EUR)</label>
-                  <input id="vbez" type="number" step="0.01" min="0" value="0.00" />
-                </div>
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend>Insurance and Social Deductions</legend>
-              <div class="form-grid">
-                <div>
-                  <label for="krv">Pension insurance KRV</label>
-                  <select id="krv">
-                    <option value="0" selected>statutory/voluntary</option>
-                    <option value="1">not statutory</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="alv">Unemployment insurance ALV</label>
-                  <select id="alv">
-                    <option value="0" selected>statutory</option>
-                    <option value="1">not statutory</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="pkv">Health insurance PKV</label>
-                  <select id="pkv">
-                    <option value="0" selected>public</option>
-                    <option value="1">private</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="kvz">Additional health rate KVZ (%)</label>
-                  <input id="kvz" type="number" step="0.01" min="0" value="2.50" />
-                </div>
-                <div>
-                  <label for="care-mode">Care insurance mode</label>
-                  <select id="care-mode">
-                    <option value="normal0" selected>normal without surcharge</option>
-                    <option value="normal1">normal with surcharge</option>
-                    <option value="sax0">Saxony without surcharge</option>
-                    <option value="sax1">Saxony with surcharge</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="care-kids">Care insurance children</label>
-                  <select id="care-kids">
-                    <option value="0" selected>0 or 1 child</option>
-                    <option value="1">2 children</option>
-                    <option value="2">3 children</option>
-                    <option value="3">4 children</option>
-                    <option value="4">5+ children</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="pkpv">Private insurance monthly PKPV (EUR)</label>
-                  <input id="pkpv" type="number" step="0.01" min="0" value="0.00" />
-                </div>
-                <div>
-                  <label for="pkpvagz">Employer subsidy PKPVAGZ (EUR)</label>
-                  <input id="pkpvagz" type="number" step="0.01" min="0" value="0.00" />
-                </div>
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend>Allowance / Addition for Period</legend>
-              <div class="row-2">
-                <div>
-                  <label for="lzzfreib">LZZFREIB (EUR)</label>
-                  <input id="lzzfreib" type="number" step="0.01" min="0" value="0.00" />
-                </div>
-                <div>
-                  <label for="lzzhinzu">LZZHINZU (EUR)</label>
-                  <input id="lzzhinzu" type="number" step="0.01" min="0" value="0.00" />
-                </div>
-              </div>
-            </fieldset>
-
-            <details>
-              <summary>Advanced Inputs (bonuses, annual overrides, pension details)</summary>
-              <div class="form-grid" style="margin-top: 10px">
-                <div><label for="sonstb">SONSTB (EUR)</label><input id="sonstb" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="sonstent">SONSTENT (EUR)</label><input id="sonstent" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="sterbe">STERBE (EUR)</label><input id="sterbe" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="jre4">JRE4 (EUR)</label><input id="jre4" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="jre4ent">JRE4ENT (EUR)</label><input id="jre4ent" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="jvbez">JVBEZ (EUR)</label><input id="jvbez" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="vbs">VBS (EUR)</label><input id="vbs" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="jfreib">JFREIB (EUR)</label><input id="jfreib" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="jhinzu">JHINZU (EUR)</label><input id="jhinzu" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="mbv">MBV (EUR)</label><input id="mbv" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="vbezm">VBEZM (EUR)</label><input id="vbezm" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="vbezs">VBEZS (EUR)</label><input id="vbezs" type="number" step="0.01" min="0" value="0.00" /></div>
-                <div><label for="vjahr">VJAHR (year)</label><input id="vjahr" type="number" min="0" value="0" /></div>
-                <div><label for="zmvb">ZMVB (months)</label><input id="zmvb" type="number" min="0" max="12" value="0" /></div>
-              </div>
-            </details>
-
-            <div class="actions">
-              <button id="calculate-btn" type="button">Calculate</button>
-              <button id="reset-btn" class="secondary" type="button">Reset</button>
-              <button id="preset-monthly" class="preset" type="button">Preset: Monthly 5,000 EUR</button>
-              <button id="preset-yearly" class="preset" type="button">Preset: Yearly 25,000 EUR</button>
-              <button id="preset-factor" class="preset" type="button">Preset: STKL 4 with factor</button>
-            </div>
-            <div class="status" id="status">Ready.</div>
-          </form>
-        </article>
-
-        <aside style="display: grid; gap: 12px; align-content: start">
-          <section class="card">
-            <h2>Results</h2>
-            <div class="stats">
-              <div class="stat">
-                <div class="k">LSTLZZ</div>
-                <div class="v" id="stat-lst">0</div>
-                <div class="tiny" id="stat-lst-eur">0.00 EUR</div>
-              </div>
-              <div class="stat">
-                <div class="k">SOLZLZZ</div>
-                <div class="v" id="stat-solz">0</div>
-                <div class="tiny" id="stat-solz-eur">0.00 EUR</div>
-              </div>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Output</th>
-                  <th>Cent</th>
-                  <th>EUR</th>
-                </tr>
-              </thead>
-              <tbody id="results-body"></tbody>
-            </table>
-          </section>
-
-          <section class="card">
-            <h2>Generated API Payload</h2>
-            <p class="tiny">Exactly what is passed to <span class="mono">calculate(year, inputs)</span>.</p>
-            <pre><code class="language-json" id="payload-json">{}</code></pre>
-          </section>
-
-          <section class="card">
-            <h2>Usage snippets</h2>
-            <pre><code class="language-typescript">import { calculate } from "lohnsteuerrechner";
-
-const result = calculate(2026, {
-  LZZ: 2,
-  RE4: 500000,
-  STKL: 1,
-  KVZ: 2.5,
-  PVZ: 1,
-});
-
-console.log(result.LSTLZZ);</code></pre>
-          </section>
-        </aside>
-      </section>
-
-      <p class="footer">
-        Inspired by the official BMF form layout at
-        <a href="https://www.bmf-steuerrechner.de/bl/bl2026/eingabeformbl2026.xhtml">bmf-steuerrechner.de</a>.
-      </p>
-    </main>
+    <div id="app" class="relative z-10"></div>
 
     <script type="module">
-      const statusEl = document.getElementById("status");
-      const resultsBodyEl = document.getElementById("results-body");
-      const payloadEl = document.getElementById("payload-json");
-      const taxClassModeEl = document.getElementById("tax-class-mode");
-      const factorWrapEl = document.getElementById("factor-wrap");
+      import React, { useMemo, useState } from "https://esm.sh/react@19.2.0";
+      import { createRoot } from "https://esm.sh/react-dom@19.2.0/client";
+      import htm from "https://esm.sh/htm@3.1.1";
 
+      const html = htm.bind(React.createElement);
+
+      const YEAR_OPTIONS = [2026, 2025];
+      const LZZ_OPTIONS = [
+        { value: 1, label: "Jahr" },
+        { value: 2, label: "Monat" },
+        { value: 3, label: "Woche" },
+        { value: 4, label: "Tag" },
+      ];
+      const TAX_CLASS_OPTIONS = ["1", "2", "3", "4", "4f", "5", "6"];
+      const CARE_MODE_OPTIONS = [
+        { value: "normal0", label: "ohne Zuschlag" },
+        { value: "normal1", label: "mit Zuschlag" },
+        { value: "sax0", label: "Sachsen ohne Zuschlag" },
+        { value: "sax1", label: "Sachsen mit Zuschlag" },
+      ];
       const OUTPUT_FIELDS = [
         "LSTLZZ",
         "SOLZLZZ",
@@ -538,284 +123,422 @@ console.log(result.LSTLZZ);</code></pre>
         "WVFRBM",
       ];
 
-      const MONEY_IDS = [
-        "re4",
-        "vbez",
-        "pkpv",
-        "pkpvagz",
-        "lzzfreib",
-        "lzzhinzu",
-        "sonstb",
-        "sonstent",
-        "sterbe",
-        "jre4",
-        "jre4ent",
-        "jvbez",
-        "vbs",
-        "jfreib",
-        "jhinzu",
-        "mbv",
-        "vbezm",
-        "vbezs",
-      ];
+      const DEFAULT_MODEL = {
+        year: 2026,
+        lzz: 2,
+        taxClassMode: "1",
+        factor: 1.0,
+        birthYear: "",
+        zkf: 0,
+        churchTax: 0,
+        re4Eur: 5000,
+        vbezEur: 0,
+        kvz: 2.5,
+        krv: 0,
+        alv: 0,
+        pkv: 0,
+        careMode: "normal1",
+        pva: 0,
+        pkpvEur: 0,
+        pkpvagzEur: 0,
+        lzzfreibEur: 0,
+        lzzhinzuEur: 0,
+        sonstbEur: 0,
+      };
 
-      let calculate;
+      const DEFAULT_OPS = {
+        headcount: 24,
+        revenueEur: 520000,
+        nonPayrollEur: 172000,
+      };
 
-      function q(id) {
-        return document.getElementById(id);
+      function toCent(value) {
+        return Math.round((Number(value) || 0) * 100);
       }
 
-      function readNumber(id) {
-        const raw = q(id).value.trim().replace(",", ".");
-        if (raw === "") {
-          return undefined;
-        }
-        const n = Number(raw);
-        return Number.isFinite(n) ? n : undefined;
+      function formatEUR(value) {
+        return Number(value || 0).toLocaleString("de-DE", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
       }
 
-      function euroToCent(value) {
-        return Math.round(value * 100);
+      function formatCent(cent) {
+        return formatEUR((Number(cent) || 0) / 100);
       }
 
-      function maybeSet(target, key, value) {
-        if (value !== undefined && value !== null && !Number.isNaN(value)) {
-          target[key] = value;
-        }
-      }
+      function buildPayload(model) {
+        const inputs = {
+          LZZ: Number(model.lzz),
+          STKL: model.taxClassMode === "4f" ? 4 : Number(model.taxClassMode),
+          ZKF: Number(model.zkf),
+          R: Number(model.churchTax),
+          RE4: toCent(model.re4Eur),
+          VBEZ: toCent(model.vbezEur),
+          KVZ: Number(model.kvz),
+          KRV: Number(model.krv),
+          ALV: Number(model.alv),
+          PKV: Number(model.pkv),
+          PVS: String(model.careMode).startsWith("sax") ? 1 : 0,
+          PVZ: String(model.careMode).endsWith("1") ? 1 : 0,
+          PVA: Number(model.pva),
+          PKPV: toCent(model.pkpvEur),
+          PKPVAGZ: toCent(model.pkpvagzEur),
+          LZZFREIB: toCent(model.lzzfreibEur),
+          LZZHINZU: toCent(model.lzzhinzuEur),
+          SONSTB: toCent(model.sonstbEur),
+        };
 
-      function centToEur(cent) {
-        return (Number(cent) / 100).toFixed(2);
-      }
-
-      function updateFactorVisibility() {
-        factorWrapEl.style.display = taxClassModeEl.value === "4f" ? "block" : "none";
-      }
-
-      function resetToDefaults() {
-        q("year").value = "2026";
-        q("birth-year").value = "";
-        q("tax-class-mode").value = "1";
-        q("factor").value = "1.000";
-        q("zkf").value = "0";
-        q("church-state").value = "none";
-        q("lzz").value = "2";
-        q("re4").value = "5000.00";
-        q("vbez").value = "0.00";
-        q("krv").value = "0";
-        q("alv").value = "0";
-        q("pkv").value = "0";
-        q("kvz").value = "2.50";
-        q("care-mode").value = "normal0";
-        q("care-kids").value = "0";
-        q("pkpv").value = "0.00";
-        q("pkpvagz").value = "0.00";
-        q("lzzfreib").value = "0.00";
-        q("lzzhinzu").value = "0.00";
-        q("sonstb").value = "0.00";
-        q("sonstent").value = "0.00";
-        q("sterbe").value = "0.00";
-        q("jre4").value = "0.00";
-        q("jre4ent").value = "0.00";
-        q("jvbez").value = "0.00";
-        q("vbs").value = "0.00";
-        q("jfreib").value = "0.00";
-        q("jhinzu").value = "0.00";
-        q("mbv").value = "0.00";
-        q("vbezm").value = "0.00";
-        q("vbezs").value = "0.00";
-        q("vjahr").value = "0";
-        q("zmvb").value = "0";
-        updateFactorVisibility();
-      }
-
-      function applyPreset(name) {
-        resetToDefaults();
-
-        if (name === "monthly") {
-          q("lzz").value = "2";
-          q("re4").value = "5000.00";
-          q("tax-class-mode").value = "1";
-          q("kvz").value = "2.50";
-          q("care-mode").value = "normal1";
-        }
-
-        if (name === "yearly") {
-          q("lzz").value = "1";
-          q("re4").value = "25000.00";
-          q("tax-class-mode").value = "1";
-          q("kvz").value = "0.00";
-          q("care-mode").value = "normal0";
-        }
-
-        if (name === "factor") {
-          q("lzz").value = "2";
-          q("re4").value = "4200.00";
-          q("tax-class-mode").value = "4f";
-          q("factor").value = "0.910";
-          q("kvz").value = "2.50";
-          q("care-mode").value = "normal1";
-          q("zkf").value = "1";
-        }
-
-        updateFactorVisibility();
-        runCalculation();
-      }
-
-      function buildInputs() {
-        const year = Number(q("year").value);
-        const inputs = {};
-
-        maybeSet(inputs, "LZZ", Number(q("lzz").value));
-
-        const taxMode = q("tax-class-mode").value;
-        if (taxMode === "4f") {
-          maybeSet(inputs, "STKL", 4);
-          maybeSet(inputs, "af", 1);
-          const f = readNumber("factor");
-          maybeSet(inputs, "f", f === undefined ? 1 : Number(f.toFixed(3)));
+        if (model.taxClassMode === "4f") {
+          inputs.af = 1;
+          inputs.f = Number(model.factor);
         } else {
-          maybeSet(inputs, "STKL", Number(taxMode));
-          maybeSet(inputs, "af", 0);
+          inputs.af = 0;
         }
 
-        maybeSet(inputs, "ZKF", readNumber("zkf"));
-        maybeSet(inputs, "R", q("church-state").value === "none" ? 0 : 1);
-
-        const birthYear = readNumber("birth-year");
-        if (birthYear !== undefined) {
-          if (year - birthYear >= 64) {
-            maybeSet(inputs, "ALTER1", 1);
-            maybeSet(inputs, "AJAHR", birthYear + 65);
-          } else {
-            maybeSet(inputs, "ALTER1", 0);
+        if (model.birthYear !== "") {
+          const birth = Number(model.birthYear);
+          if (Number.isFinite(birth) && model.year - birth >= 64) {
+            inputs.ALTER1 = 1;
+            inputs.AJAHR = birth + 65;
           }
         }
 
-        maybeSet(inputs, "RE4", euroToCent(readNumber("re4") ?? 0));
-        maybeSet(inputs, "VBEZ", euroToCent(readNumber("vbez") ?? 0));
-
-        maybeSet(inputs, "KRV", Number(q("krv").value));
-        maybeSet(inputs, "ALV", Number(q("alv").value));
-        maybeSet(inputs, "PKV", Number(q("pkv").value));
-        maybeSet(inputs, "KVZ", readNumber("kvz") ?? 0);
-
-        const careMode = q("care-mode").value;
-        const pvs = careMode.startsWith("sax") ? 1 : 0;
-        const pvz = careMode.endsWith("1") ? 1 : 0;
-        maybeSet(inputs, "PVS", pvs);
-        maybeSet(inputs, "PVZ", pvz);
-        maybeSet(inputs, "PVA", Number(q("care-kids").value));
-
-        maybeSet(inputs, "PKPV", euroToCent(readNumber("pkpv") ?? 0));
-        maybeSet(inputs, "PKPVAGZ", euroToCent(readNumber("pkpvagz") ?? 0));
-
-        maybeSet(inputs, "LZZFREIB", euroToCent(readNumber("lzzfreib") ?? 0));
-        maybeSet(inputs, "LZZHINZU", euroToCent(readNumber("lzzhinzu") ?? 0));
-
-        maybeSet(inputs, "SONSTB", euroToCent(readNumber("sonstb") ?? 0));
-        maybeSet(inputs, "SONSTENT", euroToCent(readNumber("sonstent") ?? 0));
-        maybeSet(inputs, "STERBE", euroToCent(readNumber("sterbe") ?? 0));
-        maybeSet(inputs, "JRE4", euroToCent(readNumber("jre4") ?? 0));
-        maybeSet(inputs, "JRE4ENT", euroToCent(readNumber("jre4ent") ?? 0));
-        maybeSet(inputs, "JVBEZ", euroToCent(readNumber("jvbez") ?? 0));
-        maybeSet(inputs, "VBS", euroToCent(readNumber("vbs") ?? 0));
-        maybeSet(inputs, "JFREIB", euroToCent(readNumber("jfreib") ?? 0));
-        maybeSet(inputs, "JHINZU", euroToCent(readNumber("jhinzu") ?? 0));
-        maybeSet(inputs, "MBV", euroToCent(readNumber("mbv") ?? 0));
-        maybeSet(inputs, "VBEZM", euroToCent(readNumber("vbezm") ?? 0));
-        maybeSet(inputs, "VBEZS", euroToCent(readNumber("vbezs") ?? 0));
-        maybeSet(inputs, "VJAHR", readNumber("vjahr") ?? 0);
-        maybeSet(inputs, "ZMVB", readNumber("zmvb") ?? 0);
-
-        return { year, inputs };
+        return { year: Number(model.year), inputs };
       }
 
-      function renderOutputs(outputs) {
-        const rows = OUTPUT_FIELDS.map((field) => {
-          const cent = outputs[field] ?? 0;
-          return `<tr><td>${field}</td><td>${cent}</td><td>${centToEur(cent)}</td></tr>`;
-        }).join("");
-        resultsBodyEl.innerHTML = rows;
-
-        const lst = outputs.LSTLZZ ?? 0;
-        const solz = outputs.SOLZLZZ ?? 0;
-        q("stat-lst").textContent = String(lst);
-        q("stat-solz").textContent = String(solz);
-        q("stat-lst-eur").textContent = `${centToEur(lst)} EUR`;
-        q("stat-solz-eur").textContent = `${centToEur(solz)} EUR`;
+      function getInputNumber(stateValue) {
+        if (stateValue === "") return "";
+        const n = Number(stateValue);
+        return Number.isFinite(n) ? n : "";
       }
 
-      function setStatus(text, isError = false) {
-        statusEl.textContent = text;
-        statusEl.classList.toggle("error", isError);
+      function Field({ label, children, hint }) {
+        return html`
+          <label className="grid gap-2">
+            <span className="text-xs uppercase tracking-wide text-fiscal-700/90 font-semibold">${label}</span>
+            ${children}
+            ${hint
+              ? html`<span className="text-[11px] text-slate-500 -mt-1">${hint}</span>`
+              : null}
+          </label>
+        `;
       }
 
-      function runCalculation() {
-        if (!calculate) {
-          setStatus("Core module is not loaded. Run demo workflow to publish dist files.", true);
-          return;
-        }
-
-        try {
-          const payload = buildInputs();
-          payloadEl.textContent = JSON.stringify(payload, null, 2);
-          const result = calculate(payload.year, payload.inputs);
-          renderOutputs(result);
-          setStatus(`Calculated successfully for year ${payload.year}.`);
-        } catch (error) {
-          setStatus(`Calculation failed: ${String(error)}`, true);
-        }
+      function NumberInput({ value, onChange, step = "1", min = "0" }) {
+        return html`
+          <input
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-fiscal-500 focus:ring-4 focus:ring-fiscal-200"
+            type="number"
+            min=${min}
+            step=${step}
+            value=${getInputNumber(value)}
+            onChange=${onChange}
+          />
+        `;
       }
+
+      function SelectInput({ value, onChange, options }) {
+        return html`
+          <select
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-fiscal-500 focus:ring-4 focus:ring-fiscal-200"
+            value=${value}
+            onChange=${onChange}
+          >
+            ${options.map(
+              (item) => html`<option key=${String(item.value)} value=${item.value}>${item.label}</option>`,
+            )}
+          </select>
+        `;
+      }
+
+      function App({ calculateFn, loadError }) {
+        const [model, setModel] = useState(DEFAULT_MODEL);
+        const [ops, setOps] = useState(DEFAULT_OPS);
+
+        const calcState = useMemo(() => {
+          if (!calculateFn) {
+            return {
+              ok: false,
+               error: loadError || "Das Berechnungsmodul konnte nicht geladen werden.",
+              payload: { year: model.year, inputs: {} },
+            };
+          }
+          try {
+            const payload = buildPayload(model);
+            const outputs = calculateFn(payload.year, payload.inputs);
+            return { ok: true, payload, outputs };
+          } catch (error) {
+            return {
+              ok: false,
+              error: String(error),
+              payload: buildPayload(model),
+            };
+          }
+        }, [calculateFn, loadError, model]);
+
+        const metrics = useMemo(() => {
+          const perEmployeeGross = Number(model.re4Eur) || 0;
+          const headcount = Number(ops.headcount) || 0;
+          const payrollEur = perEmployeeGross * headcount;
+          const employeeTaxEur = calcState.ok
+            ? (Number(calcState.outputs.LSTLZZ) + Number(calcState.outputs.SOLZLZZ)) / 100
+            : 0;
+          const teamTaxEur = employeeTaxEur * headcount;
+          const totalOutflow = payrollEur + teamTaxEur + Number(ops.nonPayrollEur || 0);
+          const margin = Number(ops.revenueEur || 0) - totalOutflow;
+          const taxRate = payrollEur > 0 ? (teamTaxEur / payrollEur) * 100 : 0;
+
+          const rev = Math.max(Number(ops.revenueEur || 0), 1);
+          return {
+            payrollEur,
+            employeeTaxEur,
+            teamTaxEur,
+            totalOutflow,
+            margin,
+            taxRate,
+            bars: {
+              revenue: 100,
+              payroll: Math.min((payrollEur / rev) * 100, 100),
+              tax: Math.min((teamTaxEur / rev) * 100, 100),
+              nonPayroll: Math.min((Number(ops.nonPayrollEur || 0) / rev) * 100, 100),
+            },
+          };
+        }, [calcState, model.re4Eur, ops]);
+
+        const patchModel = (key, parser = Number) => (event) => {
+          const next = event.target.value;
+          setModel((prev) => ({ ...prev, [key]: parser(next) }));
+        };
+        const patchOps = (key) => (event) => {
+          setOps((prev) => ({ ...prev, [key]: Number(event.target.value) }));
+        };
+
+        const setScenario = (name) => {
+          if (name === "ops") {
+            setModel((prev) => ({ ...prev, re4Eur: 6150, taxClassMode: "1", lzz: 2, kvz: 2.9, sonstbEur: 0 }));
+            setOps({ headcount: 42, revenueEur: 1120000, nonPayrollEur: 330000 });
+          }
+          if (name === "growth") {
+            setModel((prev) => ({ ...prev, re4Eur: 4600, taxClassMode: "4f", factor: 0.91, lzz: 2, kvz: 2.5, zkf: 1 }));
+            setOps({ headcount: 64, revenueEur: 1750000, nonPayrollEur: 510000 });
+          }
+          if (name === "annual") {
+            setModel((prev) => ({ ...prev, lzz: 1, re4Eur: 25000, taxClassMode: "1", kvz: 0, careMode: "normal0", sonstbEur: 0 }));
+            setOps({ headcount: 24, revenueEur: 520000, nonPayrollEur: 172000 });
+          }
+        };
+
+        return html`
+          <main className="mx-auto max-w-[1380px] px-5 py-8 md:px-8 lg:py-10">
+            <section className="animate-reveal rounded-3xl border border-fiscal-200/70 bg-white/85 p-6 shadow-aura backdrop-blur-xl lg:p-8">
+              <div className="flex flex-wrap items-start justify-between gap-5">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.32em] text-fiscal-600">LOHNSTEUER STEUERUNGSCOCKPIT</p>
+                  <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-fiscal-900 md:text-5xl">
+                    Lohnsteuerrechner Demoseite
+                  </h1>
+                  <p className="mt-3 max-w-3xl text-sm text-slate-600 md:text-base">
+                    Angelehnt an das BMF-Eingabeformular: mit umfassenden Lohnsteuer-Parametern,
+                    betriebswirtschaftlicher Einordnung und Szenariovergleich in Echtzeit.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-copper-300/70 bg-copper-50 px-4 py-3 text-sm text-copper-500 shadow-plate">
+                  Lokale Berechnung über <span className="font-mono">./dist/core/index.js</span>
+                </div>
+              </div>
+            </section>
+
+            <section className="mt-5 grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
+              <article className="animate-reveal rounded-3xl border border-fiscal-200/70 bg-white/92 p-5 shadow-plate backdrop-blur-sm [animation-delay:140ms] lg:p-6">
+                <div className="mb-4 flex flex-wrap gap-2">
+                  <button className="rounded-full border border-fiscal-200 bg-fiscal-50 px-3 py-1.5 text-xs font-semibold text-fiscal-700 hover:bg-fiscal-100" onClick=${() => setScenario("annual")}>Szenario: Jahresbasis</button>
+                  <button className="rounded-full border border-fiscal-200 bg-fiscal-50 px-3 py-1.5 text-xs font-semibold text-fiscal-700 hover:bg-fiscal-100" onClick=${() => setScenario("ops")}>Szenario: Personalintensiv</button>
+                  <button className="rounded-full border border-fiscal-200 bg-fiscal-50 px-3 py-1.5 text-xs font-semibold text-fiscal-700 hover:bg-fiscal-100" onClick=${() => setScenario("growth")}>Szenario: Wachstum + Faktor</button>
+                </div>
+
+                <div className="grid gap-4">
+                  <section className="rounded-2xl border border-slate-200 p-4">
+                    <h2 className="font-display text-xl text-fiscal-900">Allgemeine Besteuerungsmerkmale</h2>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <${Field} label="Kalenderjahr">
+                        <${SelectInput}
+                          value=${String(model.year)}
+                          onChange=${patchModel("year", Number)}
+                          options=${YEAR_OPTIONS.map((value) => ({ value: String(value), label: String(value) }))}
+                        />
+                      </${Field}>
+                      <${Field} label="LZZ (Lohnzahlungszeitraum)">
+                        <${SelectInput}
+                          value=${String(model.lzz)}
+                          onChange=${patchModel("lzz", Number)}
+                          options=${LZZ_OPTIONS.map((item) => ({ value: String(item.value), label: item.label }))}
+                        />
+                      </${Field}>
+                      <${Field} label="Steuerklasse">
+                        <${SelectInput}
+                          value=${model.taxClassMode}
+                          onChange=${patchModel("taxClassMode", String)}
+                          options=${TAX_CLASS_OPTIONS.map((value) => ({ value, label: value === "4f" ? "4 mit Faktor" : value }))}
+                        />
+                      </${Field}>
+                      ${model.taxClassMode === "4f"
+                        ? html`<${Field} label="Faktor f" hint="drei Nachkommastellen"><${NumberInput} value=${model.factor} step="0.001" onChange=${patchModel("factor", Number)} /></${Field}>`
+                        : null}
+                      <${Field} label="Geburtsjahr" hint="für ALTER1 / AJAHR"><${NumberInput} value=${model.birthYear} min="1900" step="1" onChange=${patchModel("birthYear", String)} /></${Field}>
+                      <${Field} label="Zahl der Kinderfreibeträge (ZKF)"><${NumberInput} value=${model.zkf} step="0.5" onChange=${patchModel("zkf", Number)} /></${Field}>
+                      <${Field} label="Kirchensteuer"><${SelectInput} value=${String(model.churchTax)} onChange=${patchModel("churchTax", Number)} options=${[{ value: "0", label: "keine" }, { value: "1", label: "kirchensteuerpflichtig" }]} /></${Field}>
+                    </div>
+                  </section>
+
+                  <section className="rounded-2xl border border-slate-200 p-4">
+                    <h2 className="font-display text-xl text-fiscal-900">Angaben zum Bruttoarbeitslohn</h2>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <${Field} label="RE4 (EUR)"><${NumberInput} value=${model.re4Eur} step="0.01" onChange=${patchModel("re4Eur", Number)} /></${Field}>
+                      <${Field} label="VBEZ Versorgungsbezüge (EUR)"><${NumberInput} value=${model.vbezEur} step="0.01" onChange=${patchModel("vbezEur", Number)} /></${Field}>
+                      <${Field} label="SONSTB Sonstige Bezüge (EUR)"><${NumberInput} value=${model.sonstbEur} step="0.01" onChange=${patchModel("sonstbEur", Number)} /></${Field}>
+                      <${Field} label="LZZFREIB Freibetrag (EUR)"><${NumberInput} value=${model.lzzfreibEur} step="0.01" onChange=${patchModel("lzzfreibEur", Number)} /></${Field}>
+                      <${Field} label="LZZHINZU Hinzurechnungsbetrag (EUR)"><${NumberInput} value=${model.lzzhinzuEur} step="0.01" onChange=${patchModel("lzzhinzuEur", Number)} /></${Field}>
+                    </div>
+                  </section>
+
+                  <section className="rounded-2xl border border-slate-200 p-4">
+                    <h2 className="font-display text-xl text-fiscal-900">Angaben zu Vorsorgeaufwendungen</h2>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <${Field} label="KRV"><${SelectInput} value=${String(model.krv)} onChange=${patchModel("krv", Number)} options=${[{ value: "0", label: "gesetzliche / freiwillige RV" }, { value: "1", label: "keine gesetzliche RV" }]} /></${Field}>
+                      <${Field} label="ALV"><${SelectInput} value=${String(model.alv)} onChange=${patchModel("alv", Number)} options=${[{ value: "0", label: "gesetzliche Arbeitslosenversicherung" }, { value: "1", label: "keine gesetzliche Arbeitslosenversicherung" }]} /></${Field}>
+                      <${Field} label="PKV"><${SelectInput} value=${String(model.pkv)} onChange=${patchModel("pkv", Number)} options=${[{ value: "0", label: "gesetzliche Krankenversicherung" }, { value: "1", label: "private Krankenversicherung" }]} /></${Field}>
+                      <${Field} label="KVZ Zusatzbeitragssatz (%)"><${NumberInput} value=${model.kvz} step="0.01" onChange=${patchModel("kvz", Number)} /></${Field}>
+                      <${Field} label="Pflegeversicherung"><${SelectInput} value=${model.careMode} onChange=${patchModel("careMode", String)} options=${CARE_MODE_OPTIONS.map((x) => ({ value: x.value, label: x.label }))} /></${Field}>
+                      <${Field} label="PVA Kinderabschläge"><${NumberInput} value=${model.pva} step="1" onChange=${patchModel("pva", Number)} /></${Field}>
+                      <${Field} label="PKPV Monatsbeitrag (EUR)"><${NumberInput} value=${model.pkpvEur} step="0.01" onChange=${patchModel("pkpvEur", Number)} /></${Field}>
+                      <${Field} label="PKPVAGZ Arbeitgeberzuschuss (EUR)"><${NumberInput} value=${model.pkpvagzEur} step="0.01" onChange=${patchModel("pkpvagzEur", Number)} /></${Field}>
+                    </div>
+                  </section>
+
+                  <section className="rounded-2xl border border-slate-200 p-4">
+                    <h2 className="font-display text-xl text-fiscal-900">Betriebswirtschaftlicher Rahmen</h2>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <${Field} label="Mitarbeiterzahl"><${NumberInput} value=${ops.headcount} step="1" onChange=${patchOps("headcount")} /></${Field}>
+                      <${Field} label="Umsatz (EUR)"><${NumberInput} value=${ops.revenueEur} step="0.01" onChange=${patchOps("revenueEur")} /></${Field}>
+                      <${Field} label="Sonstige Betriebskosten (EUR)"><${NumberInput} value=${ops.nonPayrollEur} step="0.01" onChange=${patchOps("nonPayrollEur")} /></${Field}>
+                    </div>
+                  </section>
+                </div>
+              </article>
+
+              <aside className="grid gap-5">
+                <section className="animate-reveal rounded-3xl border border-fiscal-200/70 bg-gradient-to-br from-fiscal-900 to-fiscal-800 p-5 text-white shadow-aura [animation-delay:220ms]">
+                  <h2 className="font-display text-2xl">Steuerkennzahlen</h2>
+                  <p className="mt-1 text-sm text-fiscal-100/85">Verdichtete Ergebnisse auf Basis der PAP-Kernberechnung.</p>
+
+                  ${calcState.ok
+                    ? html`
+                        <div className="mt-4 grid grid-cols-2 gap-3">
+                          <div className="rounded-2xl bg-white/8 p-3">
+                            <div className="text-xs uppercase tracking-wide text-fiscal-200">LSTLZZ</div>
+                            <div className="mt-1 text-2xl font-semibold">${formatEUR(metrics.employeeTaxEur * 100)}</div>
+                            <div className="text-xs text-fiscal-200">EUR je Mitarbeiter (${model.lzz === 1 ? "jährlich" : "je Lohnzahlungszeitraum"})</div>
+                          </div>
+                          <div className="rounded-2xl bg-white/8 p-3">
+                            <div className="text-xs uppercase tracking-wide text-fiscal-200">Steuerlast gesamt</div>
+                            <div className="mt-1 text-2xl font-semibold">${formatEUR(metrics.teamTaxEur)}</div>
+                            <div className="text-xs text-fiscal-200">EUR für ${ops.headcount} Mitarbeitende</div>
+                          </div>
+                          <div className="rounded-2xl bg-white/8 p-3">
+                            <div className="text-xs uppercase tracking-wide text-fiscal-200">Steuerquote</div>
+                            <div className="mt-1 text-2xl font-semibold">${metrics.taxRate.toFixed(2)}%</div>
+                            <div className="text-xs text-fiscal-200">Steuer / Bruttolohnsumme</div>
+                          </div>
+                          <div className="rounded-2xl bg-white/8 p-3">
+                            <div className="text-xs uppercase tracking-wide text-fiscal-200">Operativer Saldo</div>
+                            <div className="mt-1 text-2xl font-semibold ${metrics.margin >= 0 ? "text-emerald-300" : "text-rose-300"}">
+                              ${formatEUR(metrics.margin)}
+                            </div>
+                            <div className="text-xs text-fiscal-200">EUR nach Lohn + Steuer + Betriebskosten</div>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 space-y-2 text-xs">
+                          <div className="space-y-1">
+                            <div className="flex justify-between"><span>Umsatz</span><span>${formatEUR(ops.revenueEur)} EUR</span></div>
+                            <div className="h-2 rounded-full bg-white/20"><div className="h-full rounded-full bg-copper-300 animate-pulsebar" style=${{ width: `${metrics.bars.revenue}%` }}></div></div>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex justify-between"><span>Bruttolohnsumme</span><span>${formatEUR(metrics.payrollEur)} EUR</span></div>
+                            <div className="h-2 rounded-full bg-white/20"><div className="h-full rounded-full bg-fiscal-200" style=${{ width: `${metrics.bars.payroll}%` }}></div></div>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex justify-between"><span>Lohnsteuerlast</span><span>${formatEUR(metrics.teamTaxEur)} EUR</span></div>
+                            <div className="h-2 rounded-full bg-white/20"><div className="h-full rounded-full bg-copper-400" style=${{ width: `${metrics.bars.tax}%` }}></div></div>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex justify-between"><span>Sonstige Betriebskosten</span><span>${formatEUR(ops.nonPayrollEur)} EUR</span></div>
+                            <div className="h-2 rounded-full bg-white/20"><div className="h-full rounded-full bg-slate-200/80" style=${{ width: `${metrics.bars.nonPayroll}%` }}></div></div>
+                          </div>
+                        </div>
+                      `
+                    : html`<p className="mt-4 rounded-2xl border border-rose-300/50 bg-rose-400/15 p-3 text-sm">${calcState.error}</p>`}
+                </section>
+
+                <section className="animate-reveal rounded-3xl border border-slate-200 bg-white/92 p-5 shadow-plate [animation-delay:300ms]">
+                  <h3 className="font-display text-xl text-fiscal-900">PAP-Ausgaben</h3>
+                  <div className="mt-3 max-h-[330px] overflow-auto rounded-xl border border-slate-200">
+                    <table className="w-full text-sm">
+                      <thead className="sticky top-0 bg-slate-50 text-slate-600">
+                        <tr>
+                          <th className="px-3 py-2 text-left font-semibold">Feld</th>
+                          <th className="px-3 py-2 text-right font-semibold">Cent</th>
+                          <th className="px-3 py-2 text-right font-semibold">EUR</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${OUTPUT_FIELDS.map((field) => {
+                          const cent = calcState.ok ? Number(calcState.outputs[field] || 0) : 0;
+                          return html`
+                            <tr key=${field} className="border-t border-slate-100">
+                              <td className="px-3 py-2 font-mono text-xs text-fiscal-700">${field}</td>
+                              <td className="px-3 py-2 text-right">${cent}</td>
+                              <td className="px-3 py-2 text-right text-slate-600">${formatCent(cent)}</td>
+                            </tr>
+                          `;
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+
+                <section className="animate-reveal rounded-3xl border border-slate-200 bg-white/92 p-5 shadow-plate [animation-delay:360ms]">
+                  <h3 className="font-display text-xl text-fiscal-900">Generierter Payload</h3>
+                  <p className="mt-1 text-xs text-slate-500">Exaktes Objekt für <span className="font-mono">calculate(year, inputs)</span>.</p>
+                  <pre className="mt-3 max-h-[280px] overflow-auto rounded-xl bg-slate-950 p-3 text-xs text-emerald-100"><code>${JSON.stringify(calcState.payload, null, 2)}</code></pre>
+                </section>
+              </aside>
+            </section>
+
+            <footer className="mt-5 rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-xs text-slate-600 backdrop-blur-sm">
+              Aufbau und Begriffe orientieren sich am offiziellen BMF-Rechner 2026.
+              Referenz:
+              <a className="text-fiscal-700 underline decoration-fiscal-300 underline-offset-2" href="https://www.bmf-steuerrechner.de/bl/bl2026/eingabeformbl2026.xhtml">
+                bmf-steuerrechner.de
+              </a>
+            </footer>
+          </main>
+        `;
+      }
+
+      let calculateFn = null;
+      let loadError = "";
 
       try {
-        ({ calculate } = await import("./dist/core/index.js"));
+        ({ calculate: calculateFn } = await import("./dist/core/index.js"));
       } catch (error) {
-        setStatus("Failed to load local dist bundle. Ensure demo workflow built and deployed dist/.", true);
+        loadError = `./dist/core/index.js konnte nicht geladen werden: ${String(error)}`;
       }
 
-      taxClassModeEl.addEventListener("change", () => {
-        updateFactorVisibility();
-        runCalculation();
-      });
-
-      q("calculate-btn").addEventListener("click", runCalculation);
-      q("reset-btn").addEventListener("click", () => {
-        resetToDefaults();
-        runCalculation();
-      });
-      q("preset-monthly").addEventListener("click", () => applyPreset("monthly"));
-      q("preset-yearly").addEventListener("click", () => applyPreset("yearly"));
-      q("preset-factor").addEventListener("click", () => applyPreset("factor"));
-
-      for (const id of [
-        "year",
-        "birth-year",
-        "zkf",
-        "church-state",
-        "lzz",
-        "krv",
-        "alv",
-        "pkv",
-        "kvz",
-        "care-mode",
-        "care-kids",
-        "vjahr",
-        "zmvb",
-      ]) {
-        q(id).addEventListener("change", runCalculation);
-      }
-
-      for (const id of MONEY_IDS) {
-        q(id).addEventListener("input", runCalculation);
-      }
-
-      q("factor").addEventListener("input", runCalculation);
-
-      resetToDefaults();
-      runCalculation();
+      createRoot(document.getElementById("app")).render(
+        html`<${App} calculateFn=${calculateFn} loadError=${loadError} />`,
+      );
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
   </body>
 </html>
