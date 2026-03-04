@@ -171,6 +171,22 @@ All output fields are integer Cent values.
 | 2025 | `Lohnsteuer2025.xml` | Implemented |
 | 2026 | `Lohnsteuer2026.xml` | Implemented |
 
+## Yearly Update Quickstart
+
+To implement a new PAP year with the update agent:
+
+```bash
+npm run update-pap
+```
+
+Equivalent direct command:
+
+```bash
+npx opencode-ai run --command project:update-pap
+```
+
+The full workflow spec lives in `.opencode/commands/update-pap.md`.
+
 ## Validation
 
 - 2026 implementation is validated against the official BMF external API with cached fixture vectors.
