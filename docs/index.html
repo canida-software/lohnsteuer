@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lohnsteuerrechner Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,600;10..48,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css"
@@ -25,14 +31,15 @@
 
       body {
         margin: 0;
-        padding: 24px;
+        padding: 28px;
         color: var(--ink);
         background:
           radial-gradient(circle at 12% 2%, #fff4db 0, #fff4db 10%, transparent 36%),
           radial-gradient(circle at 92% 18%, #e8f0ff 0, #e8f0ff 12%, transparent 38%),
           var(--bg);
         font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
-        line-height: 1.45;
+        line-height: 1.5;
+        font-feature-settings: "ss01" 1;
       }
 
       .container {
@@ -50,13 +57,18 @@
 
       h1 {
         margin: 0;
-        font-size: 30px;
+        font-family: "Bricolage Grotesque", "IBM Plex Sans", sans-serif;
+        font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.45rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.12;
       }
 
       .subtitle {
         margin: 8px 0 0;
         color: var(--muted);
         max-width: 860px;
+        font-size: 15px;
       }
 
       .pill {
@@ -66,6 +78,7 @@
         border-radius: 999px;
         padding: 6px 12px;
         font-size: 13px;
+        font-weight: 600;
         white-space: nowrap;
       }
 
@@ -78,19 +91,23 @@
       .card {
         background: var(--panel);
         border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 14px;
+        border-radius: 14px;
+        padding: 16px;
         box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
       }
 
       .card h2 {
-        margin: 0 0 8px;
-        font-size: 18px;
+        margin: 0 0 10px;
+        font-family: "Bricolage Grotesque", "IBM Plex Sans", sans-serif;
+        font-size: 20px;
+        font-weight: 650;
+        letter-spacing: -0.01em;
       }
 
       .tiny {
         color: var(--muted);
         font-size: 13px;
+        line-height: 1.45;
       }
 
       .form-grid {
@@ -107,22 +124,26 @@
 
       fieldset {
         border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 12px;
+        border-radius: 11px;
+        padding: 13px;
         margin: 0 0 12px;
       }
 
       legend {
         padding: 0 6px;
         color: #1e3a8a;
+        font-family: "Bricolage Grotesque", "IBM Plex Sans", sans-serif;
+        font-size: 15px;
         font-weight: 700;
+        letter-spacing: -0.01em;
       }
 
       label {
         display: block;
-        font-size: 13px;
+        font-size: 12.5px;
         margin-bottom: 4px;
         color: #334155;
+        font-weight: 600;
       }
 
       input,
@@ -133,6 +154,15 @@
         background: #fff;
         padding: 8px 10px;
         font-size: 14px;
+        line-height: 1.35;
+        transition: border-color 120ms ease, box-shadow 120ms ease;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.15);
       }
 
       details {
@@ -145,13 +175,14 @@
         cursor: pointer;
         font-weight: 700;
         color: #334155;
+        letter-spacing: -0.01em;
       }
 
       .actions {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 10px;
+        gap: 10px;
+        margin-top: 14px;
       }
 
       button {
@@ -159,6 +190,8 @@
         border-radius: 8px;
         padding: 9px 12px;
         font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.005em;
         cursor: pointer;
         background: #0f172a;
         color: #fff;
@@ -182,9 +215,10 @@
       }
 
       .status {
-        margin-top: 10px;
+        margin-top: 12px;
         color: var(--muted);
         font-size: 13px;
+        line-height: 1.4;
       }
 
       .status.error {
@@ -210,8 +244,10 @@
       }
 
       .stat .v {
-        font-size: 20px;
+        font-family: "Bricolage Grotesque", "IBM Plex Sans", sans-serif;
+        font-size: 22px;
         font-weight: 700;
+        letter-spacing: -0.01em;
       }
 
       table {
@@ -223,7 +259,7 @@
       th,
       td {
         text-align: left;
-        padding: 8px 6px;
+        padding: 9px 8px;
         border-bottom: 1px solid #e2e8f0;
         font-size: 13px;
       }
@@ -242,12 +278,18 @@
       }
 
       .footer {
-        margin-top: 18px;
+        margin-top: 20px;
+        padding-top: 12px;
+        border-top: 1px solid #e2e8f0;
         color: var(--muted);
         font-size: 13px;
       }
 
       @media (max-width: 1020px) {
+        body {
+          padding: 18px;
+        }
+
         .layout {
           grid-template-columns: 1fr;
         }
@@ -264,7 +306,7 @@
             in Cent umgerechnet und lokal über <span class="mono">./dist/core/index.js</span> berechnet.
           </p>
         </div>
-        <div class="pill">Ohne npm-CDN-Abhaengigkeit</div>
+        <div class="pill">Ohne npm-CDN-Abhängigkeit</div>
       </header>
 
       <section class="layout">
@@ -304,7 +346,7 @@
                   <input id="factor" type="number" step="0.001" min="0" value="1.000" />
                 </div>
                 <div>
-                  <label for="zkf">Zahl der Kinderfreibetraege (ZKF)</label>
+                  <label for="zkf">Zahl der Kinderfreibeträge (ZKF)</label>
                   <select id="zkf">
                     <option value="0" selected>0</option>
                     <option value="0.5">0.5</option>
@@ -321,7 +363,7 @@
                   <label for="church-state">Kirchensteuer-Bundesland</label>
                   <select id="church-state">
                     <option value="none" selected>keine Kirchensteuer</option>
-                    <option value="bw">Baden-Wuerttemberg</option>
+                    <option value="bw">Baden-Württemberg</option>
                     <option value="by">Bayern</option>
                     <option value="be">Berlin</option>
                     <option value="bb">Brandenburg</option>
@@ -336,7 +378,7 @@
                     <option value="sn">Sachsen</option>
                     <option value="st">Sachsen-Anhalt</option>
                     <option value="sh">Schleswig-Holstein</option>
-                    <option value="th">Thueringen</option>
+                    <option value="th">Thüringen</option>
                   </select>
                 </div>
               </div>
@@ -359,7 +401,7 @@
                   <input id="re4" type="number" step="0.01" min="0" value="5000.00" />
                 </div>
                 <div>
-                  <label for="vbez">Versorgungsbezuege VBEZ (EUR)</label>
+                  <label for="vbez">Versorgungsbezüge VBEZ (EUR)</label>
                   <input id="vbez" type="number" step="0.01" min="0" value="0.00" />
                 </div>
               </div>
@@ -403,7 +445,7 @@
                   </select>
                 </div>
                 <div>
-                  <label for="care-kids">PVA Kinderabschlaege</label>
+                  <label for="care-kids">PVA Kinderabschläge</label>
                   <select id="care-kids">
                     <option value="0" selected>0 oder 1 Kind</option>
                     <option value="1">2 Kinder</option>
@@ -438,7 +480,7 @@
             </fieldset>
 
             <details>
-              <summary>Erweiterte Eingaben (Sonstige Bezuege, Jahreswerte, Versorgungsdaten)</summary>
+              <summary>Erweiterte Eingaben (Sonstige Bezüge, Jahreswerte, Versorgungsdaten)</summary>
               <div class="form-grid" style="margin-top: 10px">
                 <div><label for="sonstb">SONSTB (EUR)</label><input id="sonstb" type="number" step="0.01" min="0" value="0.00" /></div>
                 <div><label for="sonstent">SONSTENT (EUR)</label><input id="sonstent" type="number" step="0.01" min="0" value="0.00" /></div>
@@ -459,7 +501,7 @@
 
             <div class="actions">
               <button id="calculate-btn" type="button">Berechnen</button>
-              <button id="reset-btn" class="secondary" type="button">Zuruecksetzen</button>
+              <button id="reset-btn" class="secondary" type="button">Zurücksetzen</button>
               <button id="preset-monthly" class="preset" type="button">Voreinstellung: Monat 5.000 EUR</button>
               <button id="preset-yearly" class="preset" type="button">Voreinstellung: Jahr 25.000 EUR</button>
               <button id="preset-factor" class="preset" type="button">Voreinstellung: STKL 4 mit Faktor</button>
@@ -761,7 +803,7 @@ console.log(result.LSTLZZ);</code></pre>
 
       function runCalculation() {
         if (!calculate) {
-          setStatus("Das Kernmodul ist nicht geladen. Bitte Demo-Workflow fuer dist-Dateien ausfuehren.", true);
+          setStatus("Das Kernmodul ist nicht geladen. Bitte Demo-Workflow für dist-Dateien ausführen.", true);
           return;
         }
 
@@ -779,7 +821,7 @@ console.log(result.LSTLZZ);</code></pre>
       try {
         ({ calculate } = await import("./dist/core/index.js"));
       } catch (error) {
-        setStatus("Lokales Dist-Bundle konnte nicht geladen werden. Bitte Demo-Workflow mit dist/ erneut ausfuehren.", true);
+        setStatus("Lokales Dist-Bundle konnte nicht geladen werden. Bitte Demo-Workflow mit dist/ erneut ausführen.", true);
       }
 
       taxClassModeEl.addEventListener("change", () => {
