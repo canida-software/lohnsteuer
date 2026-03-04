@@ -1,0 +1,42 @@
+{
+  "name": "lohnsteuer",
+  "version": "0.1.0",
+  "description": "German wage tax (Lohnsteuer) calculation from the official BMF Programmablaufplan",
+  "keywords": ["lohnsteuer", "german", "tax", "wage-tax", "payroll", "steuer", "bmf"],
+  "homepage": "https://github.com/canida-software/lohnsteuer#readme",
+  "bugs": { "url": "https://github.com/canida-software/lohnsteuer/issues" },
+  "repository": { "type": "git", "url": "git+https://github.com/canida-software/lohnsteuer.git" },
+  "license": "MIT",
+  "author": "Canida Software <bui.qd@canida.io>",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "lint": "oxlint -D recommended --ignore-pattern node_modules",
+    "test": "vitest run",
+    "test:api": "vitest run tests/bmf-api.test.ts",
+    "typecheck": "tsc --noEmit",
+    "update-pap": "opencode run --command project:update-pap"
+  },
+  "dependencies": {
+    "decimal.js": "^10.5.0"
+  },
+  "devDependencies": {
+    "opencode-ai": "latest",
+    "oxlint": "^1.41.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
