@@ -263,9 +263,9 @@ function PayrollForm() {
       </section>
 
       <section class="card">
-        <h2 style="margin-top: 0">Browser CDN Example</h2>
+        <h2 style="margin-top: 0">Browser ESM Example (No npm CDN)</h2>
         <pre><code class="language-html">&lt;script type="module"&gt;
-  import { calculate } from "https://cdn.jsdelivr.net/npm/lohnsteuerrechner/+esm";
+  import { calculate } from "./dist/core/index.js";
 
   const result = calculate(2026, {
     LZZ: 2,
@@ -320,10 +320,10 @@ function PayrollForm() {
 
       let calculate;
       try {
-        ({ calculate } = await import("https://cdn.jsdelivr.net/npm/lohnsteuerrechner/+esm"));
+        ({ calculate } = await import("./dist/core/index.js"));
       } catch (error) {
         statusEl.classList.add("error");
-        statusEl.textContent = "Failed to load lohnsteuerrechner from jsDelivr.";
+        statusEl.textContent = "Failed to load local dist bundle. Check demo build/deploy.";
       }
 
       function runCalculation() {
