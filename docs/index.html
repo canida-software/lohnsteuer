@@ -207,7 +207,18 @@
         margin-bottom: 10px;
       }
 
+      .calc-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
       .result-head h2 {
+        margin: 0;
+      }
+
+      .calc-head h2 {
         margin: 0;
       }
 
@@ -345,10 +356,15 @@
         z-index: 100;
       }
 
+      .modal-backdrop[hidden] {
+        display: none !important;
+      }
+
       .modal-panel {
         width: min(900px, 100%);
         max-height: min(82vh, 920px);
-        overflow: auto;
+        display: flex;
+        flex-direction: column;
         background: #fff;
         border: 1px solid #cbd5e1;
         border-radius: 14px;
@@ -366,6 +382,11 @@
 
       .modal-head h2 {
         margin: 0;
+      }
+
+      .modal-body {
+        overflow: auto;
+        padding-right: 4px;
       }
 
       @media (max-width: 1020px) {
@@ -400,7 +421,10 @@
 
       <section class="layout">
         <article class="card">
-          <h2>Eingabeparameter</h2>
+          <div class="calc-head">
+            <h2>Eingabeparameter</h2>
+            <button id="payload-open" class="secondary icon-btn" type="button" title="Payload anzeigen" aria-label="Payload anzeigen">{}</button>
+          </div>
           <p class="tiny">Feldbezeichnungen folgen, soweit sinnvoll, den PAP-Parametern.</p>
 
           <form id="tax-form" onsubmit="return false;">
@@ -596,7 +620,6 @@
           <section class="card">
             <div class="result-head">
               <h2>Ergebnisse</h2>
-              <button id="payload-open" class="secondary icon-btn" type="button" title="Payload anzeigen" aria-label="Payload anzeigen">{}</button>
             </div>
             <div class="result-actions">
               <button id="calculate-btn" class="big" type="button">Berechnen</button>
@@ -654,8 +677,10 @@ console.log(result.LSTLZZ);</code></pre>
             <h2 id="payload-title">Generierter API-Payload</h2>
             <button id="payload-close" class="secondary" type="button">Schließen</button>
           </div>
-          <p class="tiny">Genau dieses Objekt wird an <span class="mono">calculate(year, inputs)</span> übergeben.</p>
-          <pre><code class="language-json" id="payload-json">{}</code></pre>
+          <div class="modal-body">
+            <p class="tiny">Genau dieses Objekt wird an <span class="mono">calculate(year, inputs)</span> übergeben.</p>
+            <pre><code class="language-json" id="payload-json">{}</code></pre>
+          </div>
         </section>
       </div>
     </main>
@@ -669,6 +694,8 @@ console.log(result.LSTLZZ);</code></pre>
       const payloadCloseEl = document.getElementById("payload-close");
       const taxClassModeEl = document.getElementById("tax-class-mode");
       const factorWrapEl = document.getElementById("factor-wrap");
+
+      payloadModalEl.hidden = true;
 
       const OUTPUT_FIELDS = [
         "LSTLZZ",
@@ -917,11 +944,13 @@ console.log(result.LSTLZZ);</code></pre>
 
       function openPayloadModal() {
         payloadModalEl.hidden = false;
+        payloadOpenEl.setAttribute("aria-expanded", "true");
         document.body.style.overflow = "hidden";
       }
 
       function closePayloadModal() {
         payloadModalEl.hidden = true;
+        payloadOpenEl.setAttribute("aria-expanded", "false");
         document.body.style.overflow = "";
       }
 
@@ -953,10 +982,21 @@ console.log(result.LSTLZZ);</code></pre>
         resetToDefaults();
         runCalculation();
       });
-      payloadOpenEl.addEventListener("click", openPayloadModal);
-      payloadCloseEl.addEventListener("click", closePayloadModal);
+      payloadOpenEl.setAttribute("aria-expanded", "false");
+
+      payloadOpenEl.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        openPayloadModal();
+      });
+      payloadCloseEl.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closePayloadModal();
+      });
       payloadModalEl.addEventListener("click", (event) => {
         if (event.target === payloadModalEl) {
+          event.stopPropagation();
           closePayloadModal();
         }
       });
