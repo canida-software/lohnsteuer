@@ -6,7 +6,7 @@ subtask: false
 
 # Update PAP: Discover and implement new BMF Programmablaufplan year(s)
 
-You are updating the `lohnsteuer` npm package with support for new tax year(s).
+You are updating the `lohnsteuerrechner` npm package with support for new tax year(s).
 
 Read `AGENTS.md` and `.context/docs/domain.md` FIRST for project rules and domain knowledge.
 

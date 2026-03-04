@@ -2,7 +2,7 @@
 
 ## Project
 
-`lohnsteuer` -- TypeScript npm package implementing the official German wage tax
+`lohnsteuerrechner` -- TypeScript npm package implementing the official German wage tax
 (Lohnsteuer) calculation algorithm from the BMF Programmablaufplan (PAP).
 
 ## Goal
@@ -61,7 +61,7 @@ Java-flavored pseudocode -- translate it to TypeScript, do not copy Java idioms.
 
 3. **The public API should be simple:**
    ```typescript
-   import { calculate } from "lohnsteuer"
+   import { calculate } from "lohnsteuerrechner"
    const result = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1 })
    // result.LSTLZZ -> 78583 (Cent)
    ```

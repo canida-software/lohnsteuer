@@ -1,12 +1,12 @@
 ---
-description: "Implement the lohnsteuer npm package end-to-end from PROMPT.md"
+description: "Implement the lohnsteuerrechner npm package end-to-end from PROMPT.md"
 agent: "build"
 subtask: false
 ---
 
-# Implement `lohnsteuer` -- End-to-End
+# Implement `lohnsteuerrechner` -- End-to-End
 
-You are building the `lohnsteuer` npm package from scratch. Everything has been
+You are building the `lohnsteuerrechner` npm package from scratch. Everything has been
 planned for you. Your job is to execute.
 
 ## What already exists (committed to the repo)

@@ -1,4 +1,4 @@
-# lohnsteuer
+# lohnsteuerrechner
 
 German wage tax calculation from the official BMF Programmablaufplan.
 
