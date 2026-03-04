@@ -1,0 +1,38 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--headless"],
+      "enabled": true,
+      "timeout": 30000
+    }
+  },
+  "instructions": [
+    "AGENTS.md",
+    ".context/docs/domain.md"
+  ],
+  "permission": {
+    "read": "allow",
+    "edit": "allow",
+    "bash": {
+      "*": "ask",
+      "npm *": "allow",
+      "npx *": "allow",
+      "git *": "allow",
+      "gh *": "allow",
+      "curl *": "allow",
+      "ls *": "allow",
+      "mkdir *": "allow",
+      "diff *": "allow",
+      "wc *": "allow",
+      "cat *": "allow"
+    },
+    "glob": "allow",
+    "grep": "allow",
+    "webfetch": "allow",
+    "task": "allow",
+    "todowrite": "allow",
+    "todoread": "allow"
+  }
+}

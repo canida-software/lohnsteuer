@@ -1,0 +1,54 @@
+# === Project artifacts ===
+node_modules/
+dist/
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+._*
+
+# === Editor / IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+
+# === Environment / secrets ===
+.env
+.env.*
+!.env.example
+
+# === Logs ===
+*.log
+npm-debug.log*
+
+# === Large reference repos in .context ===
+# These are cloned on demand, not committed.
+# Run the setup commands in PROMPT.md Phase 0 to restore them.
+.context/taxjs/
+.context/kennzeichen/
+.context/opencode/
+.context/chrome-devtools-mcp/
+
+# === opencode runtime data ===
+# opencode creates .opencode/sessions/, .opencode/db/, etc. at runtime.
+# We only want the commands/ directory committed.
+.opencode/*
+!.opencode/commands/
+
+# ============================================================
+# Override global gitignore -- these files MUST be committed
+# ============================================================
+# Your global gitignore (~/.gitignore or ~/.config/git/ignore)
+# likely ignores these patterns. The negations below ensure
+# they are tracked in this repository.
+# ============================================================
+
+!AGENTS.md
+!opencode.json
+!.opencode/
+!.context/
