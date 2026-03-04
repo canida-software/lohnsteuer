@@ -179,13 +179,13 @@ All output fields are integer Cent values.
   - Output: `LSTLZZ=78583`, `SOLZLZZ=0`
 - Official BMF interface: `https://www.bmf-steuerrechner.de/interface/2026Version1.xhtml?code=LSt2026ext`
 
-## Browser ESM (No npm CDN)
+## Vanilla JS / CDN
 
-For static demos (including GitHub Pages), load the built ESM bundle from `dist/`:
+Use directly in the browser with jsDelivr:
 
 ```html
 <script type="module">
-  import { calculate } from "./dist/core/index.js";
+  import { calculate } from "https://cdn.jsdelivr.net/npm/lohnsteuerrechner/+esm";
 
   const result = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1, KVZ: 2.5, PVZ: 1 });
   console.log(result.LSTLZZ);
