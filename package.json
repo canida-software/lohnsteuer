@@ -1,6 +1,6 @@
 {
   "name": "lohnsteuerrechner",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "German wage tax (Lohnsteuer) calculation from the official BMF Programmablaufplan",
   "keywords": [
     "lohnsteuer",
