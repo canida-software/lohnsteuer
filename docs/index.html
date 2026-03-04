@@ -818,10 +818,22 @@ console.log(result.LSTLZZ);</code></pre>
         }
       }
 
-      try {
-        ({ calculate } = await import("./dist/core/index.js"));
-      } catch (error) {
-        setStatus("Lokales Dist-Bundle konnte nicht geladen werden. Bitte Demo-Workflow mit dist/ erneut ausführen.", true);
+      const importKandidaten = ["./dist/core/index.js", "../dist/core/index.js", "/dist/core/index.js"];
+      let letzterImportFehler = "";
+      for (const kandidat of importKandidaten) {
+        try {
+          ({ calculate } = await import(kandidat));
+          break;
+        } catch (error) {
+          letzterImportFehler = String(error);
+        }
+      }
+
+      if (!calculate) {
+        setStatus(
+          `Das Kernmodul ist nicht geladen. Bitte zuerst \"npm run build\" ausführen oder den Demo-Workflow prüfen. Letzter Fehler: ${letzterImportFehler}`,
+          true,
+        );
       }
 
       taxClassModeEl.addEventListener("change", () => {
