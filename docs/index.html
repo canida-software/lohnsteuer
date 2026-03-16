@@ -14,13 +14,6 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css"
     />
-    <script type="importmap">
-      {
-        "imports": {
-          "decimal.js": "https://esm.sh/decimal.js@10.6.0"
-        }
-      }
-    </script>
     <style>
       :root {
         --bg: #f5f7fb;
@@ -914,7 +907,7 @@ console.log(result.LSTLZZ);</code></pre>
 
       function runCalculation() {
         if (!calculate) {
-          setStatus("Das Kernmodul ist nicht geladen. Bitte Demo-Workflow für dist-Dateien ausführen.", true);
+          setStatus("Das Kernmodul ist nicht geladen. Bitte CDN-Verbindung prüfen.", true);
           return;
         }
 
@@ -941,7 +934,10 @@ console.log(result.LSTLZZ);</code></pre>
         document.body.style.overflow = "";
       }
 
-      const importKandidaten = ["./dist/core/index.js", "../dist/core/index.js", "/dist/core/index.js"];
+      const importKandidaten = [
+        "https://cdn.jsdelivr.net/npm/lohnsteuerrechner@1.0.6/+esm",
+        "https://cdn.jsdelivr.net/npm/lohnsteuerrechner/+esm",
+      ];
       let letzterImportFehler = "";
       for (const kandidat of importKandidaten) {
         try {
@@ -954,7 +950,7 @@ console.log(result.LSTLZZ);</code></pre>
 
       if (!calculate) {
         setStatus(
-          `Das Kernmodul ist nicht geladen. Bitte zuerst \"npm run build\" ausführen oder den Demo-Workflow prüfen. Letzter Fehler: ${letzterImportFehler}`,
+          `Das Kernmodul ist nicht geladen. Bitte CDN-Verbindung prüfen. Letzter Fehler: ${letzterImportFehler}`,
           true,
         );
       }
