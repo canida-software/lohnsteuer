@@ -2,6 +2,8 @@
 
 German wage tax calculation from the official BMF Programmablaufplan.
 
+Published on npm as `lohnsteuerrechner`.
+
 **[Live Demo](https://canida-software.github.io/lohnsteuer/)**
 
 ## Installation

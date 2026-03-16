@@ -27,9 +27,3 @@ on:
     tags:
       - "v*"
 ```
-
-## Version Guidelines
-
-- `patch` (0.0.x): Bug fixes, PAP constant corrections
-- `minor` (0.x.0): New tax year support, new features
-- `major` (x.0.0): Breaking API changes
