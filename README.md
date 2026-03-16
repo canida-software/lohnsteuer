@@ -37,11 +37,11 @@ console.log(result.SOLZLZZ); // 0
 ## React Headless Component
 
 ```tsx
-import { LohnsteuerCalculator } from "lohnsteuerrechner/react";
+import { LohnsteuerRechner } from "lohnsteuerrechner/react";
 
 export function PayrollForm() {
   return (
-    <LohnsteuerCalculator year={2026} inputs={{ LZZ: 2, RE4: 500000, STKL: 1 }}>
+    <LohnsteuerRechner year={2026} inputs={{ LZZ: 2, RE4: 500000, STKL: 1 }}>
       {({ getSelectInputProps, getNumberInputProps, getCheckboxInputProps, outputs }) => (
         <div>
           <select {...getSelectInputProps("LZZ")}>
@@ -59,7 +59,7 @@ export function PayrollForm() {
           <output>{outputs?.LSTLZZ ?? 0}</output>
         </div>
       )}
-    </LohnsteuerCalculator>
+    </LohnsteuerRechner>
   );
 }
 ```

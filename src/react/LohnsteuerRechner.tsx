@@ -23,7 +23,7 @@ export interface RenderProps extends UseLohnsteuerState {
   ) => CheckboxInputProps;
 }
 
-export interface LohnsteuerCalculatorProps extends UseLohnsteuerOptions {
+export interface LohnsteuerRechnerProps extends UseLohnsteuerOptions {
   children: (props: RenderProps) => ReactNode;
 }
 
@@ -32,7 +32,7 @@ export interface LohnsteuerCalculatorProps extends UseLohnsteuerOptions {
  *
  * @example
  * ```tsx
- * <LohnsteuerCalculator>
+ * <LohnsteuerRechner>
  *   {({ getNumberInputProps, getSelectInputProps, getCheckboxInputProps, outputs }) => (
  *     <>
  *       <select {...getSelectInputProps("LZZ")} />
@@ -43,13 +43,13 @@ export interface LohnsteuerCalculatorProps extends UseLohnsteuerOptions {
  *       <pre>{JSON.stringify(outputs, null, 2)}</pre>
  *     </>
  *   )}
- * </LohnsteuerCalculator>
+ * </LohnsteuerRechner>
  * ```
  */
-export function LohnsteuerCalculator({
+export function LohnsteuerRechner({
   children,
   ...options
-}: LohnsteuerCalculatorProps): ReactNode {
+}: LohnsteuerRechnerProps): ReactNode {
   const {
     year,
     supportedYears,

@@ -10,5 +10,5 @@ export type {
   CheckboxInputProps,
 } from "./useLohnsteuer";
 
-export { LohnsteuerCalculator } from "./LohnsteuerCalculator";
-export type { LohnsteuerCalculatorProps, RenderProps } from "./LohnsteuerCalculator";
+export { LohnsteuerRechner } from "./LohnsteuerRechner";
+export type { LohnsteuerRechnerProps, RenderProps } from "./LohnsteuerRechner";

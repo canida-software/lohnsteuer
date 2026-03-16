@@ -56,7 +56,7 @@ Java-flavored pseudocode -- translate it to TypeScript, do not copy Java idioms.
 
 2. **`src/react/`** -- Optional headless React integration.
    - `useLohnsteuer.ts` -- Hook wrapper over core `calculate`
-   - `LohnsteuerCalculator.tsx` -- Render-props headless component
+   - `LohnsteuerRechner.tsx` -- Render-props headless component
    - `index.ts` -- React subpath barrel export
 
 3. **Each PAP year is a self-contained module.** Method names MUST match the PAP exactly
