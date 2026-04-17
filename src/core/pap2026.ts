@@ -66,6 +66,7 @@ export class Pap2026 implements PapInstance {
   private BK = new Decimal(0);
   private BKS = new Decimal(0);
   private LSTLZZ = new Decimal(0);
+  private SOZIALABGABEN = new Decimal(0);
   private SOLZLZZ = new Decimal(0);
   private SOLZS = new Decimal(0);
   private STS = new Decimal(0);
@@ -313,6 +314,7 @@ export class Pap2026 implements PapInstance {
     this.BK = new Decimal(0);
     this.BKS = new Decimal(0);
     this.LSTLZZ = new Decimal(0);
+    this.SOZIALABGABEN = new Decimal(0);
     this.SOLZLZZ = new Decimal(0);
     this.SOLZS = new Decimal(0);
     this.STS = new Decimal(0);
@@ -412,6 +414,7 @@ export class Pap2026 implements PapInstance {
       BKS: this.BKS.trunc().toNumber(),
       LSTLZZ: this.LSTLZZ.trunc().toNumber(),
       SOLZLZZ: this.SOLZLZZ.trunc().toNumber(),
+      SOZIALABGABEN: this.SOZIALABGABEN.trunc().toNumber(),
       SOLZS: this.SOLZS.trunc().toNumber(),
       STS: this.STS.trunc().toNumber(),
       VFRB: this.VFRB.trunc().toNumber(),
@@ -454,6 +457,77 @@ export class Pap2026 implements PapInstance {
     this.W3STKL5 = new Decimal(222260);
     this.GFB = new Decimal(12348);
     this.SOLZFREI = new Decimal(20350);
+
+    this.BERECHNESOZIALABGABEN();
+  }
+
+  private BERECHNESOZIALABGABEN(): void {
+    const beitragspflichtigerLohn = this.RE4.div(this.ZAHL100).toDP(2, Decimal.ROUND_DOWN);
+    const rvAlvBemessungsgrenze = this.getPeriodAmountFromAnnual(this.BBGRVALV);
+    const kvPvBemessungsgrenze = this.getPeriodAmountFromAnnual(this.BBGKVPV);
+    const kvSatzAn = this.KVZ.div(this.ZAHL2).div(this.ZAHL100).plus(new Decimal("0.073"));
+
+    let sozialabgaben = new Decimal(0);
+
+    if (this.KRV === 0) {
+      const rvBasis = this.minDecimal(beitragspflichtigerLohn, rvAlvBemessungsgrenze);
+      sozialabgaben = sozialabgaben.plus(
+        rvBasis.times(this.RVSATZAN).toDP(2, Decimal.ROUND_HALF_UP),
+      );
+    }
+
+    if (this.ALV === 0) {
+      const alvBasis = this.minDecimal(beitragspflichtigerLohn, rvAlvBemessungsgrenze);
+      sozialabgaben = sozialabgaben.plus(
+        alvBasis.times(this.AVSATZAN).toDP(2, Decimal.ROUND_HALF_UP),
+      );
+    }
+
+    if (this.PKV > 0) {
+      const privateKvpv = this.getPeriodAmountFromMonthly(this.PKPV);
+      sozialabgaben = sozialabgaben.plus(privateKvpv);
+    } else {
+      const kvPvBasis = this.minDecimal(beitragspflichtigerLohn, kvPvBemessungsgrenze);
+
+      sozialabgaben = sozialabgaben.plus(
+        kvPvBasis.times(kvSatzAn).toDP(2, Decimal.ROUND_HALF_UP),
+      );
+      sozialabgaben = sozialabgaben.plus(
+        kvPvBasis.times(this.PVSATZAN).toDP(2, Decimal.ROUND_HALF_UP),
+      );
+    }
+
+    this.SOZIALABGABEN = sozialabgaben.times(this.ZAHL100).toDP(0, Decimal.ROUND_HALF_UP);
+  }
+
+  private getPeriodAmountFromAnnual(amount: Decimal): Decimal {
+    if (this.LZZ === 1) {
+      return amount.toDP(2, Decimal.ROUND_HALF_UP);
+    }
+    if (this.LZZ === 2) {
+      return amount.div(this.ZAHL12).toDP(2, Decimal.ROUND_HALF_UP);
+    }
+    if (this.LZZ === 3) {
+      return amount.times(this.ZAHL7).div(this.ZAHL360).toDP(2, Decimal.ROUND_HALF_UP);
+    }
+    return amount.div(this.ZAHL360).toDP(2, Decimal.ROUND_HALF_UP);
+  }
+
+  private getPeriodAmountFromMonthly(amountInCent: Decimal): Decimal {
+    if (this.LZZ === 1) {
+      return amountInCent.times(this.ZAHL12).div(this.ZAHL100).toDP(2, Decimal.ROUND_HALF_UP);
+    }
+    if (this.LZZ === 2) {
+      return amountInCent.div(this.ZAHL100).toDP(2, Decimal.ROUND_HALF_UP);
+    }
+    if (this.LZZ === 3) {
+      return amountInCent.times(this.ZAHL7).div(new Decimal(30).times(this.ZAHL100)).toDP(2, Decimal.ROUND_HALF_UP);
+    }
+    return amountInCent.div(new Decimal(30).times(this.ZAHL100)).toDP(2, Decimal.ROUND_HALF_UP);
+  }
+
+  private minDecimal(left: Decimal, right: Decimal): Decimal {
+    return left.cmp(right) === 1 ? right : left;
   }
 
   /**
