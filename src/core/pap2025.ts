@@ -75,6 +75,7 @@ export class Pap2025 implements PapInstance {
   private BK = new Decimal(0);
   private BKS = new Decimal(0);
   private LSTLZZ = new Decimal(0);
+  private SOZIALABGABEN = new Decimal(0);
   private SOLZLZZ = new Decimal(0);
   private SOLZS = new Decimal(0);
   private STS = new Decimal(0);
@@ -327,6 +328,7 @@ export class Pap2025 implements PapInstance {
     this.BK = new Decimal(0);
     this.BKS = new Decimal(0);
     this.LSTLZZ = new Decimal(0);
+    this.SOZIALABGABEN = new Decimal(0);
     this.SOLZLZZ = new Decimal(0);
     this.SOLZS = new Decimal(0);
     this.STS = new Decimal(0);
@@ -429,6 +431,7 @@ export class Pap2025 implements PapInstance {
       BKS: this.BKS.trunc().toNumber(),
       LSTLZZ: this.LSTLZZ.trunc().toNumber(),
       SOLZLZZ: this.SOLZLZZ.trunc().toNumber(),
+      SOZIALABGABEN: this.SOZIALABGABEN.trunc().toNumber(),
       SOLZS: this.SOLZS.trunc().toNumber(),
       STS: this.STS.trunc().toNumber(),
       VFRB: this.VFRB.trunc().toNumber(),

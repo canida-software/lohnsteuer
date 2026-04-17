@@ -331,6 +331,12 @@ export interface LohnsteuerOutputs {
   SOLZLZZ: number;
 
   /**
+   * Vom Paket zusätzlich berechnete Sozialabgaben des Arbeitnehmers fuer den
+   * Lohnzahlungszeitraum in Cent.
+   */
+  SOZIALABGABEN: number;
+
+  /**
    * Solidaritätszuschlag für sonstige Bezüge in Cent.
    * Hinweis: Negativbeträge, die aus nicht zu besteuernden Vorteilen bei
    * Vermögensbeteiligungen (§ 19a Absatz 1 Satz 4 EStG) resultieren,
@@ -731,6 +737,7 @@ export const STANDARD_OUTPUT_NAMES = [
   "BKS",
   "LSTLZZ",
   "SOLZLZZ",
+  "SOZIALABGABEN",
   "SOLZS",
   "STS",
 ] as const;

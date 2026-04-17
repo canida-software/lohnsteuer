@@ -18,6 +18,7 @@ npm install lohnsteuerrechner
 - Cent-exact results aligned with the BMF Steuerrechner API
 - Supports all 6 tax classes and all 4 pay periods
 - Computes Solidaritaetszuschlag and church tax bases
+- Provides employee social contributions as an additional package output
 - Handles supplementary payments (sonstige Bezuege)
 - Includes pension and age-related allowance rules from PAP
 - Uses Decimal arithmetic (`decimal.js`) to avoid floating-point rounding errors
@@ -32,6 +33,63 @@ const result = calculate(2026, { LZZ: 2, RE4: 500000, STKL: 1, KVZ: 2.5, PVZ: 1 
 
 console.log(result.LSTLZZ); // 78583 (Cent = 785.83 EUR)
 console.log(result.SOLZLZZ); // 0
+```
+
+## Sozialabgaben
+
+`SOZIALABGABEN` is a package-specific extension and not part of the official BMF
+PAP output set.
+
+The standard PAP implementation in this package already has most of the data
+required to derive employee-side social contributions during the same payroll
+calculation flow. Because of that, the package exposes `SOZIALABGABEN` as an
+additional output on top of the official PAP results.
+
+This value is derived from already available payroll inputs such as:
+
+- `RE4`
+- `KVZ`
+- `PVZ`
+- `PVS`
+- `PVA`
+- `KRV`
+- `ALV`
+- `PKV`
+- `PKPV`
+
+### What `SOZIALABGABEN` Means
+
+- employee-side social contributions only
+- returned for the selected pay period
+- returned as an integer Cent value
+- separate from the official PAP tax outputs like `LSTLZZ` and `SOLZLZZ`
+
+### Year Support
+
+- `2026`: fully calculated and returned
+- `2025`: currently returns a constant `0`
+
+At the moment, `SOZIALABGABEN` should therefore be treated as supported for
+`2026` input data only.
+
+### Important Note
+
+`SOZIALABGABEN` is intentionally documented separately from the standard PAP
+outputs because it is an additional package-defined field, not an official PAP
+field from the BMF specification.
+
+### Example
+
+```typescript
+const result = calculate(2026, {
+  LZZ: 2,
+  RE4: 400000,
+  STKL: 1,
+  KVZ: 2.9,
+  PVZ: 1,
+});
+
+console.log(result.SOZIALABGABEN); // 87000 (Cent = 870.00 EUR)
 ```
 
 ## React Headless Component
@@ -75,6 +133,10 @@ function calculate(year: number, inputs: LohnsteuerInputs): LohnsteuerOutputs;
 - `year`: currently supported `2025 | 2026`
 - `inputs`: PAP input parameters (all monetary values in Cent at the API boundary)
 - returns all PAP output values as integers in Cent
+
+The standard return shape also includes the package-defined field
+`SOZIALABGABEN`. See the dedicated `Sozialabgaben` section above for its meaning
+and current year support.
 
 `SUPPORTED_YEARS` is also exported from the package entrypoint.
 
@@ -155,6 +217,7 @@ All output fields are integer Cent values.
 | --- | --- |
 | `LSTLZZ` | Wage tax for the pay period |
 | `SOLZLZZ` | Solidarity surcharge for the pay period |
+| `SOZIALABGABEN` | Employee social contributions for the pay period (`2026+`; `0` in `2025`) |
 | `STS` | Wage tax for supplementary payments |
 | `SOLZS` | Solidarity surcharge for supplementary payments |
 | `BK` | Church tax base |
